@@ -38,6 +38,7 @@ th{text-align:left;color:var(--mut);font-weight:500;font-size:.78rem;padding:6px
 td{padding:9px 8px;border-bottom:1px solid var(--line)}
 tr[data-id]{cursor:pointer}tr[data-id]:hover td{background:var(--soft)}tr.sel td{background:#e8f6ee}
 .mut{color:var(--mut);font-size:.75rem}
+.cn{margin:0 0 8px;font-size:1rem;font-weight:600}
 dl{display:grid;grid-template-columns:max-content 1fr;gap:8px 16px;margin:20px 0}dt{color:var(--mut)}dd{margin:0;font-weight:500}
 .q{display:flex;align-items:center;justify-content:center;gap:24px;margin-top:8px}
 .q small{display:block;text-align:center;color:var(--mut)}
@@ -56,7 +57,7 @@ dl{display:grid;grid-template-columns:max-content 1fr;gap:8px 16px;margin:20px 0
 </style></head><body>
 <header>
 <button class="ic ok" id="ok" disabled aria-label="Save"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg></button>
-<h1>INVTRON</h1>
+<h1>INVTRON v0.8</h1>
 <button class="ic dl" id="dl" disabled aria-label="Delete"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></button>
 </header>
 <nav id="nav"></nav><main id="app"></main><div id="md" hidden></div><div id="lg" hidden></div>
@@ -71,11 +72,26 @@ const fb=initializeApp(cfg),db=getDatabase(fb),auth=getAuth(fb);
 
 // === i18n (browser language) ===
 const T={
-en:{inUse:"This line is in use!",delItem:"Inventory history will be deleted too. Do you want to proceed?",usePic:"Use this picture?",nf:"Item not found",inv:"Inventory",dup:"This Part No already exists!",out:"Sign out",pw:"Password",bad:"Invalid e-mail or password",slow:"Not confirmed by the server yet. Keep this page open: the change syncs when the connection returns. Check your connection, the databaseURL and the database rules.",chk:"Could not reach the Realtime Database. Check the databaseURL in cfg, that the database was created and that its rules allow signed-in users."},
-pt:{inUse:"Esta linha está em uso!",delItem:"O histórico do inventário também será excluído. Deseja continuar?",usePic:"Usar esta imagem?",nf:"Item não encontrado",inv:"Inventário",dup:"Este Part No já existe!",out:"Sair",pw:"Senha",bad:"E-mail ou senha inválidos",slow:"Ainda não confirmado pelo servidor. Mantenha esta página aberta: a alteração sincroniza quando a conexão voltar. Verifique a conexão, a databaseURL e as regras do banco.",chk:"Não foi possível acessar o Realtime Database. Verifique a databaseURL no cfg, se o banco foi criado e se as regras permitem usuários autenticados."},
-es:{inUse:"¡Esta línea está en uso!",delItem:"El historial del inventario también se eliminará. ¿Desea continuar?",usePic:"¿Usar esta imagen?",nf:"Artículo no encontrado",inv:"Inventario",dup:"¡Este Part No ya existe!",out:"Salir",pw:"Contraseña",bad:"Correo o contraseña no válidos",slow:"Aún no confirmado por el servidor. Mantenga esta página abierta: el cambio se sincroniza al volver la conexión. Compruebe la conexión, la databaseURL y las reglas.",chk:"No se pudo acceder a Realtime Database. Compruebe la databaseURL en cfg, que la base exista y que sus reglas permitan usuarios autenticados."}};
-const lg=navigator.language||"en";document.documentElement.lang=lg;
-const t=k=>(T[lg.slice(0,2)]||T.en)[k]||T.en[k];
+en:{Classes:"Classes",Categories:"Categories",Subcategories:"Subcategories",Locations:"Locations",Items:"Items",
+Class_name:"Class name",Category_name:"Category name",Subcategory_name:"Subcategory name",Location_name:"Location name",Item_name:"Item name",Qty:"Qty",
+save:"Save",del:"Delete",ok:"OK",cancel:"Cancel",signin:"Sign in",
+inUse:"This line is in use!",delItem:"Inventory history will be deleted too. Do you want to proceed?",usePic:"Use this picture?",nf:"Item not found",dup:"This Part No already exists!",out:"Sign out",pw:"Password",bad:"Invalid e-mail or password",slow:"Not confirmed by the server yet. Keep this page open: the change syncs when the connection returns. Check your connection, the databaseURL and the database rules.",chk:"Could not reach the Realtime Database. Check the databaseURL in cfg, that the database was created and that its rules allow signed-in users."},
+pt:{Class:"Classe",Category:"Categoria",Subcategory:"Subcategoria",Location:"Local",Item:"Item",Inventory:"Inventário",History:"Histórico",
+Classes:"Classes",Categories:"Categorias",Subcategories:"Subcategorias",Locations:"Locais",Items:"Itens",
+Class_name:"Nome da classe",Category_name:"Nome da categoria",Subcategory_name:"Nome da subcategoria",Location_name:"Nome do local",Item_name:"Nome do item",
+Unit:"Unid",Gain:"Ganho",Details:"Detalhes",Picture:"Imagem",Action:"Ação",Quantity:"Quantidade",Qty:"Qtd",
+save:"Gravar",del:"Excluir",ok:"OK",cancel:"Cancelar",signin:"Entrar",
+inUse:"Esta linha está em uso!",delItem:"O histórico do inventário também será excluído. Deseja continuar?",usePic:"Usar esta imagem?",nf:"Item não encontrado",dup:"Este Part No já existe!",out:"Sair",pw:"Senha",bad:"E-mail ou senha inválidos",slow:"Ainda não confirmado pelo servidor. Mantenha esta página aberta: a alteração sincroniza quando a conexão voltar. Verifique a conexão, a databaseURL e as regras do banco.",chk:"Não foi possível acessar o Realtime Database. Verifique a databaseURL no cfg, se o banco foi criado e se as regras permitem usuários autenticados."},
+es:{Class:"Clase",Category:"Categoría",Subcategory:"Subcategoría",Location:"Ubicación",Item:"Artículo",Inventory:"Inventario",History:"Historial",
+Classes:"Clases",Categories:"Categorías",Subcategories:"Subcategorías",Locations:"Ubicaciones",Items:"Artículos",
+Class_name:"Nombre de la clase",Category_name:"Nombre de la categoría",Subcategory_name:"Nombre de la subcategoría",Location_name:"Nombre de la ubicación",Item_name:"Nombre del artículo",
+Unit:"Unidad",Gain:"Ganancia",Details:"Detalles",Picture:"Imagen",Action:"Acción",Quantity:"Cantidad",Qty:"Cant.",
+save:"Guardar",del:"Eliminar",ok:"OK",cancel:"Cancelar",signin:"Entrar",
+inUse:"¡Esta línea está en uso!",delItem:"El historial del inventario también se eliminará. ¿Desea continuar?",usePic:"¿Usar esta imagen?",nf:"Artículo no encontrado",dup:"¡Este Part No ya existe!",out:"Salir",pw:"Contraseña",bad:"Correo o contraseña no válidos",slow:"Aún no confirmado por el servidor. Mantenga esta página abierta: el cambio se sincroniza al volver la conexión. Compruebe la conexión, la databaseURL y las reglas.",chk:"No se pudo acceder a Realtime Database. Compruebe la databaseURL en cfg, que la base exista y que sus reglas permitan usuarios autenticados."}};
+// Language = first browser/phone language; unsupported languages fall back to English. Keys missing in a language
+// (e.g. Part No, VI-VR, mA, Datasheet...) are intentionally shown as-is. To add a language, copy a block above.
+const lg=(navigator.languages&&navigator.languages[0])||navigator.language||"en";document.documentElement.lang=lg;
+const t=k=>(T[lg.slice(0,2).toLowerCase()]||T.en)[k]??T.en[k]??k;
 
 // === Schema ===
 const E={Unit:["Un","cm","g","ml","m","Kg","l"],"Cap":["","pF","nF","mF"],"Tol%":["","1%","5%","10%"],Action:["Buy","Prt","Mke","Use","Rec","Dam","Def","Dis"]};
@@ -99,15 +115,17 @@ Class:[["Class"],x=>[x.Class_name]],
 Category:[["Category"],x=>[x.Category_name]],
 Subcategory:[["Category","Subcategory"],x=>[nm("Category",x.Category_ID),x.Subcategory_name]],
 Location:[["Location"],x=>[x.Location_name]],
-Item:[["Class","Category","Subcategory","Part No","Item Name","Qty"],x=>[nm("Class",x.Class_ID),nm("Category",x.Category_ID),nm("Subcategory",x.Subcategory_ID),x["Part No"],x.Item_name,qty(x.Item_ID)]],
+Item:[["Class","Category","Subcategory","Part No","Item_name","Qty"],x=>[nm("Class",x.Class_ID),nm("Category",x.Category_ID),nm("Subcategory",x.Subcategory_ID),x["Part No"],x.Item_name,qty(x.Item_ID)]],
 History:[["Item","Action","Details","Quantity"],x=>[nm("Item",x.Item_ID),x.Action,x.Details,(ADD.includes(x.Action)?"+":"−")+x.Quantity]]};
+const PL={Class:"Classes",Category:"Categories",Subcategory:"Subcategories",Location:"Locations",Item:"Items"};
 const OK='<svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg>',DEL='<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg>';
 let cur={},F=null;
 const B={ok:$("#ok"),dl:$("#dl")};
+[[B.ok,"save"],[B.dl,"del"]].forEach(([e,k])=>{e.title=t(k);e.setAttribute("aria-label",t(k))});
 
 // === Modal ===
 const modal=(m,o={})=>new Promise(r=>{const d=$("#md"),x=v=>{d.hidden=true;r(v)};
-d.innerHTML=`<div class="bx" role="dialog">${o.img?`<img src="${esc(o.img)}" alt="">`:""}<p>${esc(m)}</p><div class="bt"><button class="ic ok" aria-label="OK">${OK}</button>${o.ask?`<button class="ic dl" aria-label="Cancel">${DEL}</button>`:""}</div></div>`;
+d.innerHTML=`<div class="bx" role="dialog">${o.img?`<img src="${esc(o.img)}" alt="">`:""}<p>${esc(m)}</p><div class="bt"><button class="ic ok" title="${esc(t("ok"))}" aria-label="${esc(t("ok"))}">${OK}</button>${o.ask?`<button class="ic dl" title="${esc(t("cancel"))}" aria-label="${esc(t("cancel"))}">${DEL}</button>`:""}</div></div>`;
 d.hidden=false;d.querySelector(".ok").onclick=()=>x(true);const q=d.querySelector(".dl");if(q)q.onclick=()=>x(false);d.querySelector(".ok").focus()});
 
 // === Data sync ===
@@ -120,7 +138,7 @@ const bump=(b,iid,d)=>{const v=col("Inventory").find(x=>x.Item_ID===iid),id=v?.I
 b[p+"Inventory_ID"]=id;b[p+"Item_ID"]=iid;b[p+"Quantity"]=increment(d)};
 const commit=b=>{const w=setTimeout(()=>modal(t("slow")),8000);
 return update(ref(db),b).then(()=>clearTimeout(w),e=>{clearTimeout(w);modal((e.code?e.code+": ":"")+e.message)})};
-const run=b=>{commit(b);reset()};
+const run=(b,keep)=>{commit(b);reset(keep)};
 
 // === CRUD ===
 function fillSel(s){const c=s.dataset.r,v=s.value;let a=col(c);
@@ -128,8 +146,8 @@ if(c==="Subcategory"&&F.elements.Category_ID)a=a.filter(x=>x.Category_ID===F.ele
 a.sort((x,y)=>String(x[c+"_name"]).localeCompare(String(y[c+"_name"])));
 s.replaceChildren(new Option("",""),...a.map(x=>new Option(x[c+"_name"],x[c+"_ID"])));s.value=v}
 const sels=()=>F.querySelectorAll("select[data-r]").forEach(fillSel);
-const lab=k=>k.replace(/_ID$/,"").replace("_"," ");
-const first=()=>F.elements[S[cur.v][0][0]].focus();
+const lab=k=>t(k.replace(/_ID$/,""));
+const first=k=>F.elements[(k?S[cur.v].find(f=>f[1]!=="r")||S[cur.v][0]:S[cur.v][0])[0]].focus();
 const val=()=>Object.fromEntries(S[cur.v].map(([k,y])=>{const v=F.elements[k].value;return[k,y==="n"?+v:v.trim()]}));
 
 let pp;
@@ -137,7 +155,7 @@ const chkPic=i=>pp||(pp=(async()=>{const v=i.value.trim();if(!v||!i.checkValidit
 if(await modal(t("usePic"),{ask:1,img:v})){i.dataset.ok=v;return true}
 i.value="";i.focus();return false})().finally(()=>pp=null));
 function crud(n){
-app.innerHTML='<form id="f" novalidate></form><hr><div class="tw"><table id="lst"></table></div>';
+app.innerHTML=`<form id="f" novalidate></form><hr>${n==="History"?"":'<h2 id="cn" class="cn"></h2>'}<div class="tw"><table id="lst"></table></div>`;
 F=$("#f");F.onsubmit=e=>e.preventDefault();
 S[n].forEach(([k,y,q])=>{const l=document.createElement("label");l.append(lab(k));let i;
 if(y==="r"||y==="e"){i=document.createElement("select");if(y==="e")i.append(...E[k].map(o=>new Option(o,o)));else i.dataset.r=k.replace("_ID","")}
@@ -156,9 +174,10 @@ sels();cur.ref=list;list();first();
 $("#lst").onclick=e=>{const r=e.target.closest("tr[data-id]");if(r&&n!=="History")pick(r.dataset.id)}}
 
 function list(){const n=cur.v,[h,fn]=LV[n];
+const cn=$("#cn");if(cn)cn.textContent=t(PL[n])+" ("+D[n].size+")";
 const a=col(n).map(x=>({x,c:fn(x)}));
 a.sort(n==="History"?(p,q)=>q.x.ts-p.x.ts:(p,q)=>{for(const i of n==="Item"?[0,1,2,4]:[0,1,2,3]){const d=String(p.c[i]??"").localeCompare(String(q.c[i]??""),undefined,{sensitivity:"base"});if(d)return d}return 0});
-$("#lst").innerHTML="<tr>"+h.map(x=>`<th>${esc(x)}</th>`).join("")+"</tr>"+
+$("#lst").innerHTML="<tr>"+h.map(x=>`<th>${esc(t(x))}</th>`).join("")+"</tr>"+
 a.map(r=>`<tr data-id="${r.x[n+"_ID"]}"${r.x[n+"_ID"]===cur.id?' class="sel"':""}>`+r.c.map((v,i)=>`<td>${esc(v)}</td>`).join("")+"</tr>").join("")}
 
 function pick(id){const r=D[cur.v].get(id);if(!r)return;cur.id=id;
@@ -166,7 +185,8 @@ S[cur.v].forEach(([k])=>{F.elements[k].value=r[k]??"";if(k==="Category_ID"&&F.el
 if(F.elements.Picture)F.elements.Picture.dataset.ok=r.Picture||"";
 B.ok.disabled=B.dl.disabled=false;list();first();scrollTo({top:0,behavior:"smooth"})}
 
-function reset(){F.reset();cur.id=null;sels();B.ok.disabled=B.dl.disabled=true;list();first()}
+function reset(keep){const k=keep?S[cur.v].filter(f=>f[1]==="r").map(f=>[f[0],F.elements[f[0]].value]):[];
+F.reset();cur.id=null;k.forEach(([n,v])=>F.elements[n].value=v);sels();B.ok.disabled=B.dl.disabled=true;list();first(keep)}
 
 function save(){if(!F||!F.reportValidity())return;
 const n=cur.v,b={},v=val();
@@ -177,7 +197,7 @@ bump(b,v.Item_ID,(ADD.includes(v.Action)?1:-1)*v.Quantity)}
 else{const id=cur.id||push(ref(db,n)).key;
 b[n+"/"+id]={...v,[n+"_ID"]:id};
 if(n==="Item"&&!cur.id)bump(b,id,0)}
-run(b)}
+run(b,1)}
 
 const USE={Class:[["Item","Class_ID"]],Category:[["Subcategory","Category_ID"],["Item","Category_ID"]],Subcategory:[["Item","Subcategory_ID"]],Location:[["Item","Location_ID"]]};
 async function del(){const n=cur.v,id=cur.id;if(!id)return;const b={};
@@ -195,31 +215,27 @@ B.ok.onclick=save;B.dl.onclick=del;
 const find=()=>{const s=$("#pn").value.trim().toLowerCase();return s?col("Item").find(x=>(x["Part No"]||"").trim().toLowerCase()===s):null};
 const adj=d=>{const it=find();if(!it)return;const b={};bump(b,it.Item_ID,d);commit(b)};
 function inv(){
-app.innerHTML=`<label>Part No<input id="pn" autocomplete="off" autocapitalize="off" spellcheck="false"></label><dl id="inf"></dl><div class="q"><button class="pm" id="mn" aria-label="−1">−</button><div><small>${esc(t("inv"))}</small><b id="qt">0</b></div><button class="pm" id="pl" aria-label="+1">+</button></div>`;
+app.innerHTML=`<label>Part No<input id="pn" autocomplete="off" autocapitalize="off" spellcheck="false"></label><dl id="inf"></dl><div class="q"><button class="pm" id="mn" aria-label="−1">−</button><div><small>${esc(t("Inventory"))}</small><b id="qt">0</b></div><button class="pm" id="pl" aria-label="+1">+</button></div>`;
 cur.ref=()=>{const s=$("#pn").value.trim(),it=find(),q=it?qty(it.Item_ID):0;
-$("#inf").innerHTML=it?[["Class",nm("Class",it.Class_ID)],["Category",nm("Category",it.Category_ID)],["Subcategory",nm("Subcategory",it.Subcategory_ID)],["Item name",it.Item_name],["Location",nm("Location",it.Location_ID)]].map(([a,b])=>`<dt>${a}</dt><dd>${esc(b)}</dd>`).join(""):`<dd class="mut">${s?esc(t("nf")):""}</dd>`;
+$("#inf").innerHTML=it?[["Class",nm("Class",it.Class_ID)],["Category",nm("Category",it.Category_ID)],["Subcategory",nm("Subcategory",it.Subcategory_ID)],["Item_name",it.Item_name],["Location",nm("Location",it.Location_ID)]].map(([a,b])=>`<dt>${esc(t(a))}</dt><dd>${esc(b)}</dd>`).join(""):`<dd class="mut">${s?esc(t("nf")):""}</dd>`;
 const e=$("#qt");e.textContent=q;e.className=q>0?"p":q<0?"n":"";$("#mn").disabled=$("#pl").disabled=!it};
 $("#pn").oninput=cur.ref;$("#mn").onclick=()=>adj(-1);$("#pl").onclick=()=>adj(1);
 cur.ref();$("#pn").focus()}
 
 // === Navigation ===
 const app=$("#app"),nav=$("#nav");
-nav.innerHTML=NAMES.map(n=>`<button data-n="${n}">${n}</button>`).join("")+`<button id="so">${esc(t("out"))}</button>`;
+nav.innerHTML=NAMES.map(n=>`<button data-n="${n}">${esc(t(n))}</button>`).join("")+`<button id="so">${esc(t("out"))}</button>`;
 function go(n){cur={v:n};F=null;B.ok.disabled=B.dl.disabled=true;
-[...nav.children].forEach(b=>b.classList.toggle("on",b.textContent===n));
+[...nav.children].forEach(b=>b.classList.toggle("on",b.dataset.n===n));
 n==="Inventory"?inv():crud(n)}
 nav.onclick=e=>{const b=e.target;if(b.id==="so")signOut(auth);else if(b.dataset.n)go(b.dataset.n)};
 
 // === Login (Firebase Authentication, e-mail/password) ===
 const lgn=$("#lg");
 function loginForm(){
-lgn.innerHTML=`<form id="lf" method="post" action="#" autocomplete="on"><h2>INVTRON</h2><label for="username">E-mail<input id="username" name="username" type="email" inputmode="email" required autocomplete="username" autocapitalize="off" spellcheck="false"></label><label for="password">${esc(t("pw"))}<input id="password" name="password" type="password" required autocomplete="current-password"></label><p id="le" role="alert"></p><button class="ic ok" aria-label="OK">${OK}</button></form>`;
+lgn.innerHTML=`<form id="lf" method="post" action="#" autocomplete="on"><h2>INVTRON</h2><label for="username">E-mail<input id="username" name="username" type="email" inputmode="email" required autocomplete="username" autocapitalize="off" spellcheck="false"></label><label for="password">${esc(t("pw"))}<input id="password" name="password" type="password" required autocomplete="current-password"></label><p id="le" role="alert"></p><button class="ic ok" title="${esc(t("signin"))}" aria-label="${esc(t("signin"))}">${OK}</button></form>`;
 $("#lf").onsubmit=async e=>{e.preventDefault();const f=e.target.elements;$("#le").textContent="";
 try{await signInWithEmailAndPassword(auth,f.username.value.trim(),f.password.value)}catch(x){$("#le").textContent=t("bad")}};
 lgn.hidden=false;$("#username").focus()}
 onAuthStateChanged(auth,u=>{if(u){lgn.hidden=true;lgn.replaceChildren();start()}else{stop();loginForm()}});
-
-// === PWA manifest ===
-const ICON="data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#14181f"/><text x="50" y="66" font-size="52" font-family="sans-serif" font-weight="700" fill="#fff" text-anchor="middle">IT</text></svg>');
-$("#mf").href=URL.createObjectURL(new Blob([JSON.stringify({name:"INVTRON",short_name:"INVTRON",display:"standalone",start_url:location.href,background_color:"#ffffff",theme_color:"#ffffff",icons:[{src:ICON,sizes:"any",type:"image/svg+xml"}]})],{type:"application/manifest+json"}));
 </script></body></html>
