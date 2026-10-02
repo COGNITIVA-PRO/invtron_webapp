@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff"><title>INVTRON</title>
+<link rel="manifest" id="mf" href="manifest.json">
+<meta name="theme-color" content="#000000">
+
+<!-- Script do Service Worker -->
+<script>
+  if ('serviceWorker' in navigator) {
+	navigator.serviceWorker.register('sw.js');
+  }
+</script>
+<style>
+:root{--ink:#14181f;--mut:#6b7280;--line:#e3e6ea;--bg:#fff;--soft:#f5f6f8;--ok:#1a9d4a;--no:#d33a3a;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg);padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+header{position:sticky;top:0;z-index:5;background:var(--bg);display:grid;grid-template-columns:56px 1fr 56px;align-items:center;padding:6px 8px;border-bottom:1px solid var(--line)}
+h1{margin:0;text-align:center;font-size:1.25rem;letter-spacing:.3em;font-weight:700}
+.ic{width:44px;height:44px;border-radius:50%;border:1.5px solid currentColor;background:none;display:grid;place-items:center;cursor:pointer;padding:0}
+.ic svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.ok{color:var(--ok)}.dl{color:var(--no)}.ic:disabled{opacity:.25;cursor:default}
+.ic:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+nav{display:flex;gap:6px;overflow-x:auto;padding:10px 12px;border-bottom:1px solid var(--line);scrollbar-width:none}
+nav button{flex:none;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:6px 14px;font:inherit;cursor:pointer}
+nav button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+main{max-width:960px;margin:0 auto;padding:16px 12px 48px}
+form{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+label{display:grid;gap:4px;font-size:.8rem;color:var(--mut)}
+input,select{font:inherit;color:var(--ink);padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);width:100%;min-height:42px}
+hr{border:0;border-top:1px solid var(--line);margin:20px 0}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.92rem}
+th{text-align:left;color:var(--mut);font-weight:500;font-size:.78rem;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 8px;border-bottom:1px solid var(--line)}
+tr[data-id]{cursor:pointer}tr[data-id]:hover td{background:var(--soft)}tr.sel td{background:#e8f6ee}
+.mut{color:var(--mut);font-size:.75rem}
+dl{display:grid;grid-template-columns:max-content 1fr;gap:8px 16px;margin:20px 0}dt{color:var(--mut)}dd{margin:0;font-weight:500}
+.q{display:flex;align-items:center;justify-content:center;gap:24px;margin-top:8px}
+.q small{display:block;text-align:center;color:var(--mut)}
+#qt{font-size:3.5rem;font-weight:800;min-width:3ch;text-align:center;color:#000}#qt.p{color:var(--ok)}#qt.n{color:var(--no)}
+.pm{width:64px;height:64px;border-radius:50%;border:1.5px solid var(--ink);background:var(--bg);font-size:2rem;cursor:pointer;color:var(--ink)}.pm:disabled{opacity:.25}
+#md{position:fixed;inset:0;background:rgba(20,24,31,.55);display:flex;align-items:center;justify-content:center;z-index:20;padding:16px}
+#md[hidden]{display:none}
+.bx{background:var(--bg);border-radius:14px;padding:20px;max-width:360px;width:100%;text-align:center}
+.bx img{max-width:100%;max-height:50vh;border-radius:8px}.bx p{margin:12px 0 16px;font-weight:600}
+.bt{display:flex;justify-content:center;gap:24px}
+#lg{position:fixed;inset:0;background:var(--bg);display:grid;place-items:center;z-index:30;padding:16px}
+#lg[hidden]{display:none}#lg form{grid-template-columns:1fr;gap:14px;width:100%;max-width:320px}
+#lg h2{text-align:center;letter-spacing:.3em;margin:0 0 6px}#le{color:var(--no);min-height:1.2em;margin:0;font-size:.9rem}#lg .ic{justify-self:center}
+#so{margin-left:auto;color:var(--mut)}
+@media(min-width:700px){h1{font-size:1.4rem}}
+</style></head><body>
+<header>
+<button class="ic ok" id="ok" disabled aria-label="Save"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg></button>
+<h1>INVTRON</h1>
+<button class="ic dl" id="dl" disabled aria-label="Delete"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></button>
+</header>
+<nav id="nav"></nav><main id="app"></main><div id="md" hidden></div><div id="lg" hidden></div>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getDatabase,ref,onValue,update,push,increment} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+// === Firebase config: replace with your project's values ===
+const cfg={apiKey:"AIzaSyDFswVTI7U8RvwpW29mDSaENQFvpcQKJNg",authDomain:"invtron.firebaseapp.com",databaseURL:"https://invtron-default-rtdb.firebaseio.com",projectId:"invtron",appId:"1:119491975952:web:a5681653eafa89bdc3e395"};
+const fb=initializeApp(cfg),db=getDatabase(fb),auth=getAuth(fb);
+
+// === i18n (browser language) ===
+const T={
+en:{inUse:"This line is in use!",delItem:"Inventory history will be deleted too. Do you want to proceed?",usePic:"Use this picture?",nf:"Item not found",inv:"Inventory",dup:"This Part No already exists!",out:"Sign out",pw:"Password",bad:"Invalid e-mail or password",slow:"Not confirmed by the server yet. Keep this page open: the change syncs when the connection returns. Check your connection, the databaseURL and the database rules.",chk:"Could not reach the Realtime Database. Check the databaseURL in cfg, that the database was created and that its rules allow signed-in users."},
+pt:{inUse:"Esta linha está em uso!",delItem:"O histórico do inventário também será excluído. Deseja continuar?",usePic:"Usar esta imagem?",nf:"Item não encontrado",inv:"Inventário",dup:"Este Part No já existe!",out:"Sair",pw:"Senha",bad:"E-mail ou senha inválidos",slow:"Ainda não confirmado pelo servidor. Mantenha esta página aberta: a alteração sincroniza quando a conexão voltar. Verifique a conexão, a databaseURL e as regras do banco.",chk:"Não foi possível acessar o Realtime Database. Verifique a databaseURL no cfg, se o banco foi criado e se as regras permitem usuários autenticados."},
+es:{inUse:"¡Esta línea está en uso!",delItem:"El historial del inventario también se eliminará. ¿Desea continuar?",usePic:"¿Usar esta imagen?",nf:"Artículo no encontrado",inv:"Inventario",dup:"¡Este Part No ya existe!",out:"Salir",pw:"Contraseña",bad:"Correo o contraseña no válidos",slow:"Aún no confirmado por el servidor. Mantenga esta página abierta: el cambio se sincroniza al volver la conexión. Compruebe la conexión, la databaseURL y las reglas.",chk:"No se pudo acceder a Realtime Database. Compruebe la databaseURL en cfg, que la base exista y que sus reglas permitan usuarios autenticados."}};
+const lg=navigator.language||"en";document.documentElement.lang=lg;
+const t=k=>(T[lg.slice(0,2)]||T.en)[k]||T.en[k];
+
+// === Schema ===
+const E={Unit:["Un","cm","g","ml","m","Kg","l"],"Cap":["","pF","nF","mF"],"Tol%":["","1%","5%","10%"],Action:["Buy","Prt","Mke","Use","Rec","Dam","Def","Dis"]};
+// field: [name, type(s text|r ref|e enum|u url|n number), required]
+const S={
+Class:[["Class_name","s",1]],
+Category:[["Category_name","s",1]],
+Subcategory:[["Category_ID","r",1],["Subcategory_name","s",1]],
+Location:[["Location_name","s",1]],
+Item:[["Class_ID","r",1],["Category_ID","r",1],["Subcategory_ID","r",1],["Location_ID","r",1],["Part No","s",1],["Item_name","s",1],["Unit","e",1],["VI-VR","s"],["VO-VF","s"],["VCEO-VDS","s"],["Gain","s"],["mA","s"],["Cap","e"],["Watts","s"],["Ohms","s"],["Tol%","e"],["MHz","s"],["Pins","s"],["Datasheet","u",1],["Details","u",1],["Picture","u",1]],
+History:[["Item_ID","r",1],["Action","e",1],["Details","s",1],["Quantity","n",1]]};
+const NAMES=["Class","Category","Subcategory","Location","Item","Inventory","History"];
+const D=Object.fromEntries(NAMES.map(n=>[n,new Map()]));
+const $=s=>document.querySelector(s),col=n=>[...D[n].values()];
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const nm=(c,id)=>D[c].get(id)?.[c+"_name"]??"";
+const qty=id=>Math.round((col("Inventory").find(x=>x.Item_ID===id)?.Quantity||0)*1e3)/1e3;
+const ADD=["Buy","Prt","Mke"];
+const LV={
+Class:[["Class"],x=>[x.Class_name]],
+Category:[["Category"],x=>[x.Category_name]],
+Subcategory:[["Category","Subcategory"],x=>[nm("Category",x.Category_ID),x.Subcategory_name]],
+Location:[["Location"],x=>[x.Location_name]],
+Item:[["Class","Category","Subcategory","Part No","Item Name","Qty"],x=>[nm("Class",x.Class_ID),nm("Category",x.Category_ID),nm("Subcategory",x.Subcategory_ID),x["Part No"],x.Item_name,qty(x.Item_ID)]],
+History:[["Item","Action","Details","Quantity"],x=>[nm("Item",x.Item_ID),x.Action,x.Details,(ADD.includes(x.Action)?"+":"−")+x.Quantity]]};
+const OK='<svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg>',DEL='<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg>';
+let cur={},F=null;
+const B={ok:$("#ok"),dl:$("#dl")};
+
+// === Modal ===
+const modal=(m,o={})=>new Promise(r=>{const d=$("#md"),x=v=>{d.hidden=true;r(v)};
+d.innerHTML=`<div class="bx" role="dialog">${o.img?`<img src="${esc(o.img)}" alt="">`:""}<p>${esc(m)}</p><div class="bt"><button class="ic ok" aria-label="OK">${OK}</button>${o.ask?`<button class="ic dl" aria-label="Cancel">${DEL}</button>`:""}</div></div>`;
+d.hidden=false;d.querySelector(".ok").onclick=()=>x(true);const q=d.querySelector(".dl");if(q)q.onclick=()=>x(false);d.querySelector(".ok").focus()});
+
+// === Data sync ===
+let subs=[];
+let on=false;
+const start=()=>{subs=[...NAMES.map(n=>onValue(ref(db,n),s=>{D[n]=new Map(Object.entries(s.val()||{}));cur.ref?.();F&&sels()},e=>modal(e.message))),onValue(ref(db,".info/connected"),s=>{on=s.val()===true})];
+setTimeout(()=>{if(subs.length&&!on)modal(t("chk"))},10000);go("Class")};
+const stop=()=>{subs.forEach(u=>u());subs=[];on=false;NAMES.forEach(n=>D[n]=new Map());cur={};F=null;app.replaceChildren();B.ok.disabled=B.dl.disabled=true};
+const bump=(b,iid,d)=>{const v=col("Inventory").find(x=>x.Item_ID===iid),id=v?.Inventory_ID||push(ref(db,"Inventory")).key,p="Inventory/"+id+"/";
+b[p+"Inventory_ID"]=id;b[p+"Item_ID"]=iid;b[p+"Quantity"]=increment(d)};
+const commit=b=>{const w=setTimeout(()=>modal(t("slow")),8000);
+return update(ref(db),b).then(()=>clearTimeout(w),e=>{clearTimeout(w);modal((e.code?e.code+": ":"")+e.message)})};
+const run=b=>{commit(b);reset()};
+
+// === CRUD ===
+function fillSel(s){const c=s.dataset.r,v=s.value;let a=col(c);
+if(c==="Subcategory"&&F.elements.Category_ID)a=a.filter(x=>x.Category_ID===F.elements.Category_ID.value);
+a.sort((x,y)=>String(x[c+"_name"]).localeCompare(String(y[c+"_name"])));
+s.replaceChildren(new Option("",""),...a.map(x=>new Option(x[c+"_name"],x[c+"_ID"])));s.value=v}
+const sels=()=>F.querySelectorAll("select[data-r]").forEach(fillSel);
+const lab=k=>k.replace(/_ID$/,"").replace("_"," ");
+const first=()=>F.elements[S[cur.v][0][0]].focus();
+const val=()=>Object.fromEntries(S[cur.v].map(([k,y])=>{const v=F.elements[k].value;return[k,y==="n"?+v:v.trim()]}));
+
+let pp;
+const chkPic=i=>pp||(pp=(async()=>{const v=i.value.trim();if(!v||!i.checkValidity()||i.dataset.ok===v)return true;
+if(await modal(t("usePic"),{ask:1,img:v})){i.dataset.ok=v;return true}
+i.value="";i.focus();return false})().finally(()=>pp=null));
+function crud(n){
+app.innerHTML='<form id="f" novalidate></form><hr><div class="tw"><table id="lst"></table></div>';
+F=$("#f");F.onsubmit=e=>e.preventDefault();
+S[n].forEach(([k,y,q])=>{const l=document.createElement("label");l.append(lab(k));let i;
+if(y==="r"||y==="e"){i=document.createElement("select");if(y==="e")i.append(...E[k].map(o=>new Option(o,o)));else i.dataset.r=k.replace("_ID","")}
+else{i=document.createElement("input");i.type=y==="u"?"url":y==="n"?"number":"text";
+if(y==="u")i.pattern="https?://.+";
+if(y==="n"){i.step="0.001";i.min="0.001"}else if(y==="s")i.maxLength=n==="History"?40:k==="Part No"?20:/name$/.test(k)?128:10}
+i.name=k;i.required=!!q;l.append(i);F.append(l)});
+F.addEventListener("input",()=>B.ok.disabled=false);
+if(n==="Item"){const c=F.elements.Category_ID;c.onchange=()=>fillSel(F.elements.Subcategory_ID);
+F.elements.Picture.onchange=e=>chkPic(e.target)}
+const last=S[n].filter(f=>f[2]).pop()[0];
+F.onkeydown=async e=>{if(e.key!=="Enter"||e.isComposing||e.target.name!==last)return;
+e.preventDefault();if(B.ok.disabled)return;
+if(last==="Picture"&&!await chkPic(e.target))return;save()};
+sels();cur.ref=list;list();first();
+$("#lst").onclick=e=>{const r=e.target.closest("tr[data-id]");if(r&&n!=="History")pick(r.dataset.id)}}
+
+function list(){const n=cur.v,[h,fn]=LV[n];
+const a=col(n).map(x=>({x,c:fn(x)}));
+a.sort(n==="History"?(p,q)=>q.x.ts-p.x.ts:(p,q)=>{for(const i of n==="Item"?[0,1,2,4]:[0,1,2,3]){const d=String(p.c[i]??"").localeCompare(String(q.c[i]??""),undefined,{sensitivity:"base"});if(d)return d}return 0});
+$("#lst").innerHTML="<tr>"+h.map(x=>`<th>${esc(x)}</th>`).join("")+"</tr>"+
+a.map(r=>`<tr data-id="${r.x[n+"_ID"]}"${r.x[n+"_ID"]===cur.id?' class="sel"':""}>`+r.c.map((v,i)=>`<td>${esc(v)}</td>`).join("")+"</tr>").join("")}
+
+function pick(id){const r=D[cur.v].get(id);if(!r)return;cur.id=id;
+S[cur.v].forEach(([k])=>{F.elements[k].value=r[k]??"";if(k==="Category_ID"&&F.elements.Subcategory_ID)fillSel(F.elements.Subcategory_ID)});
+if(F.elements.Picture)F.elements.Picture.dataset.ok=r.Picture||"";
+B.ok.disabled=B.dl.disabled=false;list();first();scrollTo({top:0,behavior:"smooth"})}
+
+function reset(){F.reset();cur.id=null;sels();B.ok.disabled=B.dl.disabled=true;list();first()}
+
+function save(){if(!F||!F.reportValidity())return;
+const n=cur.v,b={},v=val();
+if(n==="Item"){const k=v["Part No"].toLowerCase();if(col("Item").some(x=>x.Item_ID!==cur.id&&(x["Part No"]||"").trim().toLowerCase()===k))return modal(t("dup"))}
+if(n==="History"){const id=push(ref(db,n)).key;
+b[n+"/"+id]={...v,History_ID:id,ts:Date.now()};
+bump(b,v.Item_ID,(ADD.includes(v.Action)?1:-1)*v.Quantity)}
+else{const id=cur.id||push(ref(db,n)).key;
+b[n+"/"+id]={...v,[n+"_ID"]:id};
+if(n==="Item"&&!cur.id)bump(b,id,0)}
+run(b)}
+
+const USE={Class:[["Item","Class_ID"]],Category:[["Subcategory","Category_ID"],["Item","Category_ID"]],Subcategory:[["Item","Subcategory_ID"]],Location:[["Item","Location_ID"]]};
+async function del(){const n=cur.v,id=cur.id;if(!id)return;const b={};
+if(n==="Item"){if(qty(id)>0)return modal(t("inUse"));
+if(!await modal(t("delItem"),{ask:1}))return;
+b[n+"/"+id]=null;
+col("Inventory").filter(x=>x.Item_ID===id).forEach(x=>b["Inventory/"+x.Inventory_ID]=null);
+col("History").filter(x=>x.Item_ID===id).forEach(x=>b["History/"+x.History_ID]=null)}
+else{if(USE[n].some(([c,k])=>col(c).some(x=>x[k]===id)))return modal(t("inUse"));
+b[n+"/"+id]=null}
+run(b)}
+B.ok.onclick=save;B.dl.onclick=del;
+
+// === Inventory screen ===
+const find=()=>{const s=$("#pn").value.trim().toLowerCase();return s?col("Item").find(x=>(x["Part No"]||"").trim().toLowerCase()===s):null};
+const adj=d=>{const it=find();if(!it)return;const b={};bump(b,it.Item_ID,d);commit(b)};
+function inv(){
+app.innerHTML=`<label>Part No<input id="pn" autocomplete="off" autocapitalize="off" spellcheck="false"></label><dl id="inf"></dl><div class="q"><button class="pm" id="mn" aria-label="−1">−</button><div><small>${esc(t("inv"))}</small><b id="qt">0</b></div><button class="pm" id="pl" aria-label="+1">+</button></div>`;
+cur.ref=()=>{const s=$("#pn").value.trim(),it=find(),q=it?qty(it.Item_ID):0;
+$("#inf").innerHTML=it?[["Class",nm("Class",it.Class_ID)],["Category",nm("Category",it.Category_ID)],["Subcategory",nm("Subcategory",it.Subcategory_ID)],["Item name",it.Item_name],["Location",nm("Location",it.Location_ID)]].map(([a,b])=>`<dt>${a}</dt><dd>${esc(b)}</dd>`).join(""):`<dd class="mut">${s?esc(t("nf")):""}</dd>`;
+const e=$("#qt");e.textContent=q;e.className=q>0?"p":q<0?"n":"";$("#mn").disabled=$("#pl").disabled=!it};
+$("#pn").oninput=cur.ref;$("#mn").onclick=()=>adj(-1);$("#pl").onclick=()=>adj(1);
+cur.ref();$("#pn").focus()}
+
+// === Navigation ===
+const app=$("#app"),nav=$("#nav");
+nav.innerHTML=NAMES.map(n=>`<button data-n="${n}">${n}</button>`).join("")+`<button id="so">${esc(t("out"))}</button>`;
+function go(n){cur={v:n};F=null;B.ok.disabled=B.dl.disabled=true;
+[...nav.children].forEach(b=>b.classList.toggle("on",b.textContent===n));
+n==="Inventory"?inv():crud(n)}
+nav.onclick=e=>{const b=e.target;if(b.id==="so")signOut(auth);else if(b.dataset.n)go(b.dataset.n)};
+
+// === Login (Firebase Authentication, e-mail/password) ===
+const lgn=$("#lg");
+function loginForm(){
+lgn.innerHTML=`<form id="lf" method="post" action="#" autocomplete="on"><h2>INVTRON</h2><label for="username">E-mail<input id="username" name="username" type="email" inputmode="email" required autocomplete="username" autocapitalize="off" spellcheck="false"></label><label for="password">${esc(t("pw"))}<input id="password" name="password" type="password" required autocomplete="current-password"></label><p id="le" role="alert"></p><button class="ic ok" aria-label="OK">${OK}</button></form>`;
+$("#lf").onsubmit=async e=>{e.preventDefault();const f=e.target.elements;$("#le").textContent="";
+try{await signInWithEmailAndPassword(auth,f.username.value.trim(),f.password.value)}catch(x){$("#le").textContent=t("bad")}};
+lgn.hidden=false;$("#username").focus()}
+onAuthStateChanged(auth,u=>{if(u){lgn.hidden=true;lgn.replaceChildren();start()}else{stop();loginForm()}});
+
+// === PWA manifest ===
+const ICON="data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#14181f"/><text x="50" y="66" font-size="52" font-family="sans-serif" font-weight="700" fill="#fff" text-anchor="middle">IT</text></svg>');
+$("#mf").href=URL.createObjectURL(new Blob([JSON.stringify({name:"INVTRON",short_name:"INVTRON",display:"standalone",start_url:location.href,background_color:"#ffffff",theme_color:"#ffffff",icons:[{src:ICON,sizes:"any",type:"image/svg+xml"}]})],{type:"application/manifest+json"}));
+</script></body></html>
