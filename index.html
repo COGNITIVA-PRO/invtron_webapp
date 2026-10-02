@@ -2,13 +2,17 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#ffffff"><title>INVTRON</title>
+<!-- Favicon -->
+<link rel="icon" type="image/png" sizes="32x32" href="icon.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icon.png">
+<!-- iPhones/iPads (Safari) -->
+<link rel="apple-touch-icon" href="icon-512.png">
+<!-- Manifesto & Service Worker -->
 <link rel="manifest" id="mf" href="manifest.json">
 <meta name="theme-color" content="#000000">
-
-<!-- Script do Service Worker -->
 <script>
   if ('serviceWorker' in navigator) {
-	navigator.serviceWorker.register('sw.js');
+    navigator.serviceWorker.register('sw.js');
   }
 </script>
 <style>
