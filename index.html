@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#ffffff"><title>INVTRON v0.9</title>
+<meta name="theme-color" content="#ffffff"><title>INVTRON v1.0</title>
 <!-- Favicon -->
 <link rel="icon" type="image/png" sizes="32x32" href="icon.png?v=1">
 <link rel="icon" type="image/png" sizes="16x16" href="icon.png?v=1">
@@ -48,7 +48,7 @@ dl{display:grid;grid-template-columns:max-content 1fr;gap:8px 16px;margin:20px 0
 #md{position:fixed;inset:0;background:rgba(20,24,31,.55);display:flex;align-items:center;justify-content:center;z-index:20;padding:16px}
 #md[hidden]{display:none}
 .bx{background:var(--bg);border-radius:14px;padding:20px;max-width:360px;width:100%;text-align:center}
-.bx img{max-width:100%;max-height:50vh;border-radius:8px}.bx p{margin:12px 0 16px;font-weight:600}
+.bx img{max-width:100%;max-height:50vh;border-radius:8px}.bx p{margin:12px 0 16px;font-weight:600;white-space:pre-line;overflow-wrap:anywhere;max-height:50vh;overflow:auto}
 .bt{display:flex;justify-content:center;gap:24px}
 #lg{position:fixed;inset:0;background:var(--bg);display:grid;place-items:center;z-index:30;padding:16px}
 #lg[hidden]{display:none}#lg form{grid-template-columns:1fr;gap:14px;width:100%;max-width:320px}
@@ -62,7 +62,7 @@ dl{display:grid;grid-template-columns:max-content 1fr;gap:8px 16px;margin:20px 0
 </style></head><body>
 <header>
 <button class="ic ok" id="ok" disabled aria-label="Save"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg></button>
-<h1>INVTRON v0.9</h1>
+<h1>INVTRON v1.0</h1>
 <button class="ic dl" id="dl" disabled aria-label="Delete"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></button>
 </header>
 <nav id="nav"></nav><main id="app"></main><div id="md" hidden></div><div id="lg" hidden></div>
@@ -75,20 +75,21 @@ import {getDatabase,ref,onValue,update,push,increment} from "https://www.gstatic
 const cfg={apiKey:"AIzaSyDFswVTI7U8RvwpW29mDSaENQFvpcQKJNg",authDomain:"invtron.firebaseapp.com",databaseURL:"https://invtron-default-rtdb.firebaseio.com",projectId:"invtron",appId:"1:119491975952:web:a5681653eafa89bdc3e395"};
 const fb=initializeApp(cfg),db=getDatabase(fb),auth=getAuth(fb);
 // === Google Images search via Serper.dev (https://serper.dev/api-key) ===
-const IMG={key:"176c3fa92618c50959caa3de92dd139a97b81fe5",url:"https://google.serper.dev/images"};
+const IMG={key:"YOUR_SERPER_API_KEY",url:"https://google.serper.dev/images"};
+
 // === i18n (browser language) ===
 const T={
-en:{Export:"Export",xj:"Export as JSON",xc:"Export as CSV",pick:"Choose a picture",srch:"Search pictures for this Part No",imgpn:"Enter the Part No first.",imgcfg:"Image search is not configured. Set IMG.key in the code.",imgnone:"No pictures found.",imgerr:"Could not reach the image search service.",imgbad:"That picture could not be loaded. Choose another one.",Classes:"Classes",Categories:"Categories",Subcategories:"Subcategories",Locations:"Locations",Items:"Items",
+en:{Import:"Import",imj:"Import from JSON",imc:"Import from CSV",imcol:"Collection",imcols:"Columns (* required)",imres:"{n} record(s) to add, {m} rejected.",imgo:"Proceed with the import?",imdone:"{n} record(s) imported.",imbad:"The file is empty or is not valid for the chosen format.",rLn:"Line",rReq:"{f} is required",rRef:"{f} not found: {v}",rEnum:"invalid {f}: {v}",rUrl:"invalid URL in {f}",rLen:"{f} is too long (max {m})",rDup:"duplicate",Export:"Export",xj:"Export as JSON",xc:"Export as CSV",pick:"Choose a picture",srch:"Search pictures for this Part No",imgpn:"Enter the Part No first.",imgcfg:"Image search is not configured. Set IMG.key in the code.",imgnone:"No pictures found.",imgerr:"Could not reach the image search service.",imgbad:"That picture could not be loaded. Choose another one.",Classes:"Classes",Categories:"Categories",Subcategories:"Subcategories",Locations:"Locations",Items:"Items",
 Class_name:"Class name",Category_name:"Category name",Subcategory_name:"Subcategory name",Location_name:"Location name",Item_name:"Item name",Qty:"Qty",
 save:"Save",del:"Delete",ok:"OK",cancel:"Cancel",signin:"Sign in",
 inUse:"This line is in use!",delItem:"Inventory history will be deleted too. Do you want to proceed?",usePic:"Use this picture?",nf:"Item not found",dup:"This Part No already exists!",out:"Sign out",pw:"Password",bad:"Invalid e-mail or password",slow:"Not confirmed by the server yet. Keep this page open: the change syncs when the connection returns. Check your connection, the databaseURL and the database rules.",chk:"Could not reach the Realtime Database. Check the databaseURL in cfg, that the database was created and that its rules allow signed-in users."},
-pt:{Export:"Exportar",xj:"Exportar como JSON",xc:"Exportar como CSV",pick:"Escolha uma imagem",srch:"Buscar imagens deste Part No",imgpn:"Informe o Part No primeiro.",imgcfg:"A busca de imagens não está configurada. Preencha IMG.key no código.",imgnone:"Nenhuma imagem encontrada.",imgerr:"Não foi possível acessar o serviço de busca de imagens.",imgbad:"Não foi possível carregar essa imagem. Escolha outra.",Class:"Classe",Category:"Categoria",Subcategory:"Subcategoria",Location:"Local",Item:"Item",Inventory:"Inventário",History:"Histórico",
+pt:{Import:"Importar",imj:"Importar de JSON",imc:"Importar de CSV",imcol:"Coleção",imcols:"Colunas (* obrigatório)",imres:"{n} registro(s) a incluir, {m} rejeitado(s).",imgo:"Deseja prosseguir com a importação?",imdone:"{n} registro(s) importado(s).",imbad:"O arquivo está vazio ou não é válido para o formato escolhido.",rLn:"Linha",rReq:"{f} é obrigatório",rRef:"{f} não encontrado: {v}",rEnum:"{f} inválido: {v}",rUrl:"URL inválida em {f}",rLen:"{f} é longo demais (máx. {m})",rDup:"duplicado",Export:"Exportar",xj:"Exportar como JSON",xc:"Exportar como CSV",pick:"Escolha uma imagem",srch:"Buscar imagens deste Part No",imgpn:"Informe o Part No primeiro.",imgcfg:"A busca de imagens não está configurada. Preencha IMG.key no código.",imgnone:"Nenhuma imagem encontrada.",imgerr:"Não foi possível acessar o serviço de busca de imagens.",imgbad:"Não foi possível carregar essa imagem. Escolha outra.",Class:"Classe",Category:"Categoria",Subcategory:"Subcategoria",Location:"Local",Item:"Item",Inventory:"Inventário",History:"Histórico",
 Classes:"Classes",Categories:"Categorias",Subcategories:"Subcategorias",Locations:"Locais",Items:"Itens",
 Class_name:"Nome da classe",Category_name:"Nome da categoria",Subcategory_name:"Nome da subcategoria",Location_name:"Nome do local",Item_name:"Nome do item",
 Unit:"Unid",Gain:"Ganho",Details:"Detalhes",Picture:"Imagem",Action:"Ação",Quantity:"Quantidade",Qty:"Qtd",
 save:"Gravar",del:"Excluir",ok:"OK",cancel:"Cancelar",signin:"Entrar",
 inUse:"Esta linha está em uso!",delItem:"O histórico do inventário também será excluído. Deseja continuar?",usePic:"Usar esta imagem?",nf:"Item não encontrado",dup:"Este Part No já existe!",out:"Sair",pw:"Senha",bad:"E-mail ou senha inválidos",slow:"Ainda não confirmado pelo servidor. Mantenha esta página aberta: a alteração sincroniza quando a conexão voltar. Verifique a conexão, a databaseURL e as regras do banco.",chk:"Não foi possível acessar o Realtime Database. Verifique a databaseURL no cfg, se o banco foi criado e se as regras permitem usuários autenticados."},
-es:{Export:"Exportar",xj:"Exportar como JSON",xc:"Exportar como CSV",pick:"Elija una imagen",srch:"Buscar imágenes de este Part No",imgpn:"Introduzca primero el Part No.",imgcfg:"La búsqueda de imágenes no está configurada. Complete IMG.key en el código.",imgnone:"No se encontraron imágenes.",imgerr:"No se pudo acceder al servicio de búsqueda de imágenes.",imgbad:"No se pudo cargar esa imagen. Elija otra.",Class:"Clase",Category:"Categoría",Subcategory:"Subcategoría",Location:"Ubicación",Item:"Artículo",Inventory:"Inventario",History:"Historial",
+es:{Import:"Importar",imj:"Importar desde JSON",imc:"Importar desde CSV",imcol:"Colección",imcols:"Columnas (* obligatorio)",imres:"{n} registro(s) por añadir, {m} rechazado(s).",imgo:"¿Continuar con la importación?",imdone:"{n} registro(s) importado(s).",imbad:"El archivo está vacío o no es válido para el formato elegido.",rLn:"Línea",rReq:"{f} es obligatorio",rRef:"{f} no encontrado: {v}",rEnum:"{f} no válido: {v}",rUrl:"URL no válida en {f}",rLen:"{f} es demasiado largo (máx. {m})",rDup:"duplicado",Export:"Exportar",xj:"Exportar como JSON",xc:"Exportar como CSV",pick:"Elija una imagen",srch:"Buscar imágenes de este Part No",imgpn:"Introduzca primero el Part No.",imgcfg:"La búsqueda de imágenes no está configurada. Complete IMG.key en el código.",imgnone:"No se encontraron imágenes.",imgerr:"No se pudo acceder al servicio de búsqueda de imágenes.",imgbad:"No se pudo cargar esa imagen. Elija otra.",Class:"Clase",Category:"Categoría",Subcategory:"Subcategoría",Location:"Ubicación",Item:"Artículo",Inventory:"Inventario",History:"Historial",
 Classes:"Clases",Categories:"Categorías",Subcategories:"Subcategorías",Locations:"Ubicaciones",Items:"Artículos",
 Class_name:"Nombre de la clase",Category_name:"Nombre de la categoría",Subcategory_name:"Nombre de la subcategoría",Location_name:"Nombre de la ubicación",Item_name:"Nombre del artículo",
 Unit:"Unidad",Gain:"Ganancia",Details:"Detalles",Picture:"Imagen",Action:"Acción",Quantity:"Cantidad",Qty:"Cant.",
@@ -143,7 +144,7 @@ const stop=()=>{subs.forEach(u=>u());subs=[];on=false;NAMES.forEach(n=>D[n]=new 
 const bump=(b,iid,d)=>{const v=col("Inventory").find(x=>x.Item_ID===iid),id=v?.Inventory_ID||push(ref(db,"Inventory")).key,p="Inventory/"+id+"/";
 b[p+"Inventory_ID"]=id;b[p+"Item_ID"]=iid;b[p+"Quantity"]=increment(d)};
 const commit=b=>{const w=setTimeout(()=>modal(t("slow")),8000);
-return update(ref(db),b).then(()=>clearTimeout(w),e=>{clearTimeout(w);modal((e.code?e.code+": ":"")+e.message)})};
+return update(ref(db),b).then(()=>{clearTimeout(w);return true},e=>{clearTimeout(w);modal((e.code?e.code+": ":"")+e.message);return false})};
 const run=(b,keep)=>{commit(b);reset(keep)};
 
 // === CRUD ===
@@ -244,6 +245,58 @@ const e=$("#qt");e.textContent=q;e.className=q>0?"p":q<0?"n":"";$("#mn").disable
 $("#pn").oninput=cur.ref;$("#mn").onclick=()=>adj(-1);$("#pl").onclick=()=>adj(1);
 cur.ref();$("#pn").focus()}
 
+// === Import (names instead of IDs; adds records, never overwrites) ===
+const fm=(k,o)=>t(k).replace(/\{(\w)\}/g,(_,c)=>o[c]??"");
+const nk=(n,x)=>n==="Item"?String(x["Part No"]||"").trim().toLowerCase():n==="Subcategory"?x.Category_ID+"|"+String(x.Subcategory_name||"").trim().toLowerCase():String(x[n+"_name"]||"").trim().toLowerCase();
+function parseCSV(txt){txt=txt.replace(/^\uFEFF/,"");
+const f1=txt.split(/\r?\n/)[0]||"",d=f1.split(";").length>f1.split(",").length?";":",";
+const rows=[];let r=[],f="",q=false;
+for(let i=0;i<txt.length;i++){const c=txt[i];
+if(q){if(c==='"'){if(txt[i+1]==='"'){f+='"';i++}else q=false}else f+=c}
+else if(c==='"')q=true;
+else if(c===d){r.push(f);f=""}
+else if(c==="\n"||c==="\r"){if(c==="\r"&&txt[i+1]==="\n")i++;r.push(f);f="";rows.push(r);r=[]}
+else f+=c}
+if(f!==""||r.length){r.push(f);rows.push(r)}
+const h=(rows.shift()||[]).map(x=>x.trim());
+return rows.filter(x=>x.some(v=>v.trim()!=="")).map(x=>Object.fromEntries(h.map((k,i)=>[k,x[i]??""])))}
+const jsonRows=txt=>{const j=JSON.parse(txt.replace(/^\uFEFF/,"")),a=Array.isArray(j)?j:j&&typeof j==="object"?Object.values(j):null;
+if(!a||a.some(x=>!x||typeof x!=="object"))throw 0;return a};
+function build(n,rows,off){const ok=[],bad=[],seen=new Set(),have=new Set(col(n).map(x=>nk(n,x)));
+rows.forEach((o,i)=>{const g=k=>o[k]==null?"":String(o[k]).trim(),r={};let err=null;
+for(const [k,y,q] of S[n]){let v="";
+if(y==="r"){const c=k.replace("_ID",""),w=g(c+"_name");
+if(w){let m=col(c).filter(x=>String(x[c+"_name"]).trim().toLowerCase()===w.toLowerCase());
+if(c==="Subcategory"&&r.Category_ID)m=m.filter(x=>x.Category_ID===r.Category_ID);
+v=m[0]?.[k]||"";if(!v){err=fm("rRef",{f:lab(k),v:w});break}}
+else if(g(k)){v=D[c].has(g(k))?g(k):"";if(!v){err=fm("rRef",{f:lab(k),v:g(k)});break}}}
+else{v=g(k);
+if(y==="e"&&v&&!E[k].includes(v)){err=fm("rEnum",{f:lab(k),v});break}
+if(y==="u"&&v&&!/^https?:\/\/\S+$/i.test(v)){err=fm("rUrl",{f:lab(k)});break}
+const mx=k==="Part No"?20:/name$/.test(k)?128:10;
+if(y==="s"&&v.length>mx){err=fm("rLen",{f:lab(k),m:mx});break}}
+if(q&&!v){err=fm("rReq",{f:lab(k)});break}
+r[k]=v}
+if(!err){const kk=nk(n,r);if(have.has(kk)||seen.has(kk))err=t("rDup");else seen.add(kk)}
+err?bad.push(t("rLn")+" "+(i+off)+": "+err):ok.push(r)});
+return{ok,bad}}
+function imp(){
+const IM=["Class","Category","Subcategory","Location","Item"];
+app.innerHTML=`<h2 class="cn">${esc(t("Import"))}</h2><label>${esc(t("imcol"))}<select id="ims">${IM.map(n=>`<option value="${n}">${esc(t(n))}</option>`).join("")}</select></label><p class="mut" id="imh"></p><div class="xb"><button id="imj">${esc(t("imj"))}</button><button id="imc">${esc(t("imc"))}</button></div><input type="file" id="imf" hidden>`;
+const hint=()=>{$("#imh").textContent=t("imcols")+": "+S[$("#ims").value].map(([k,y,q])=>(y==="r"?k.replace("_ID","")+"_name":k)+(q?"*":"")).join(", ")};
+hint();$("#ims").onchange=hint;
+let fmt;const fl=$("#imf");
+[["#imj","json",".json,application/json"],["#imc","csv",".csv,text/csv"]].forEach(([id,f,acc])=>$(id).onclick=()=>{fmt=f;fl.accept=acc;fl.value="";fl.click()});
+fl.onchange=async()=>{const file=fl.files[0];if(!file)return;let rows=null;
+try{const txt=await file.text();rows=fmt==="json"?jsonRows(txt):parseCSV(txt)}catch(e){}
+if(!rows||!rows.length)return modal(t("imbad"));
+const n=$("#ims").value,{ok,bad}=build(n,rows,fmt==="json"?1:2);
+const msg=fm("imres",{n:ok.length,m:bad.length})+(bad.length?"\n"+bad.slice(0,8).join("\n")+(bad.length>8?"\n…":""):"");
+if(!ok.length)return modal(msg);
+if(!await modal(msg+"\n\n"+t("imgo"),{ask:1}))return;
+const b={};ok.forEach(r=>{const id=push(ref(db,n)).key;b[n+"/"+id]={...r,[n+"_ID"]:id};if(n==="Item")bump(b,id,0)});
+if(await commit(b))modal(fm("imdone",{n:ok.length}))}}
+
 // === Export (one file per selected collection) ===
 const dlf=(name,txt,type)=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000)};
 const csv=n=>{const r=col(n),h=[n+"_ID"];r.forEach(x=>Object.keys(x).forEach(k=>h.includes(k)||h.push(k)));
@@ -257,10 +310,10 @@ $("#xj").onclick=()=>run2("json");$("#xc").onclick=()=>run2("csv")}
 
 // === Navigation ===
 const app=$("#app"),nav=$("#nav");
-nav.innerHTML=NAMES.map(n=>`<button data-n="${n}">${esc(t(n))}</button>`).join("")+`<button data-n="Export">${esc(t("Export"))}</button><button id="so">${esc(t("out"))}</button>`;
+nav.innerHTML=NAMES.map(n=>`<button data-n="${n}">${esc(t(n))}</button>`).join("")+`<button data-n="Import">${esc(t("Import"))}</button><button data-n="Export">${esc(t("Export"))}</button><button id="so">${esc(t("out"))}</button>`;
 function go(n){cur={v:n};F=null;B.ok.disabled=B.dl.disabled=true;
 [...nav.children].forEach(b=>b.classList.toggle("on",b.dataset.n===n));
-n==="Inventory"?inv():n==="Export"?exp():crud(n)}
+n==="Inventory"?inv():n==="Export"?exp():n==="Import"?imp():crud(n)}
 nav.onclick=e=>{const b=e.target;if(b.id==="so")signOut(auth);else if(b.dataset.n)go(b.dataset.n)};
 
 // === Login (Firebase Authentication, e-mail/password) ===
