@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#ffffff"><title>INVTRON v1.3</title>
+<meta name="theme-color" content="#ffffff"><title>INVTRON v1.4</title>
 <!-- Favicon -->
 <link rel="icon" type="image/png" sizes="32x32" href="icon.png?v=1">
 <link rel="icon" type="image/png" sizes="16x16" href="icon.png?v=1">
@@ -184,7 +184,7 @@ S[n].forEach(([k,y,q])=>{const l=document.createElement("label");l.append(lab(k)
 if(y==="r"||y==="e"){i=document.createElement("select");if(y==="e")i.append(...E[k].map(o=>new Option(o,o)));else i.dataset.r=k.replace("_ID","")}
 else{i=document.createElement("input");i.type=y==="u"?"url":y==="n"?"number":"text";
 if(y==="u")i.pattern="https?://.+";
-if(y==="n"){i.step="0.001";i.min="0.001"}else if(y==="s")i.maxLength=n==="History"?40:k==="Part No"?20:/name$/.test(k)?128:10}
+if(y==="n"){i.step="0.001";i.min="0.001"}else if(y==="s")i.maxLength=n==="History"?40:k==="Part No"?25:/name$/.test(k)?128:10}
 i.name=k;i.required=!!q;l.append(k==="Picture"?picBox(i):i);F.append(l)});
 F.addEventListener("input",()=>B.ok.disabled=false);
 if(n==="Item"){const c=F.elements.Category_ID;c.onchange=()=>fillSel(F.elements.Subcategory_ID);
@@ -283,7 +283,7 @@ else if(g(k)){v=D[c].has(g(k))?g(k):"";if(!v){err=fm("rRef",{f:lab(k),v:g(k)});b
 else{v=g(k);
 if(y==="e"&&v&&!E[k].includes(v)){err=fm("rEnum",{f:lab(k),v});break}
 if(y==="u"&&v&&!/^https?:\/\/\S+$/i.test(v)){err=fm("rUrl",{f:lab(k)});break}
-const mx=k==="Part No"?20:/name$/.test(k)?128:10;
+const mx=k==="Part No"?25:/name$/.test(k)?128:10;
 if(y==="s"&&v.length>mx){err=fm("rLen",{f:lab(k),m:mx});break}}
 if(q&&!v){err=fm("rReq",{f:lab(k)});break}
 r[k]=v}
