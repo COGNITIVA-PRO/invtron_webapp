@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#ffffff"><title>INVTRON v1.1</title>
+<meta name="theme-color" content="#ffffff"><title>INVTRON v1.3</title>
 <!-- Favicon -->
 <link rel="icon" type="image/png" sizes="32x32" href="icon.png?v=1">
 <link rel="icon" type="image/png" sizes="16x16" href="icon.png?v=1">
@@ -62,7 +62,7 @@ dl{display:grid;grid-template-columns:max-content 1fr;gap:8px 16px;margin:20px 0
 </style></head><body>
 <header>
 <button class="ic ok" id="ok" disabled aria-label="Save"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg></button>
-<h1>INVTRON v1.1</h1>
+<h1>INVTRON v1.3</h1>
 <button class="ic dl" id="dl" disabled aria-label="Delete"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></button>
 </header>
 <nav id="nav"></nav><main id="app"></main><div id="md" hidden></div><div id="lg" hidden></div>
@@ -79,17 +79,17 @@ const IMG={key:"YOUR_SERPER_API_KEY",url:"https://google.serper.dev/images"};
 
 // === i18n (browser language) ===
 const T={
-en:{Import:"Import",imj:"Import from JSON",imc:"Import from CSV",imcol:"Collection",imcols:"Columns (* required)",imres:"{n} record(s) to add, {m} rejected.",imgo:"Proceed with the import?",imdone:"{n} record(s) imported.",imbad:"The file is empty or is not valid for the chosen format.",rQuote:"stray or unclosed quote: put the value in double quotes and double any inner quote (e.g. \"LCD 7\"\" 50 pins\")",rLn:"Line",rReq:"{f} is required",rRef:"{f} not found: {v}",rEnum:"invalid {f}: {v}",rUrl:"invalid URL in {f}",rLen:"{f} is too long (max {m})",rDup:"duplicate",Export:"Export",xj:"Export as JSON",xc:"Export as CSV",pick:"Choose a picture",srch:"Search pictures for this Part No",imgpn:"Enter the Part No first.",imgcfg:"Image search is not configured. Set IMG.key in the code.",imgnone:"No pictures found.",imgerr:"Could not reach the image search service.",imgbad:"That picture could not be loaded. Choose another one.",Classes:"Classes",Categories:"Categories",Subcategories:"Subcategories",Locations:"Locations",Items:"Items",
+en:{imopt:"optional",Import:"Import",imj:"Import from JSON",imc:"Import from CSV",imcol:"Collection",imcols:"Columns (* required)",imres:"{n} record(s) to add, {m} rejected.",imgo:"Proceed with the import?",imdone:"{n} record(s) imported.",imbad:"The file is empty or is not valid for the chosen format.",rQuote:"stray or unclosed quote: put the value in double quotes and double any inner quote (e.g. \"LCD 7\"\" 50 pins\")",rLn:"Line",rReq:"{f} is required",rRef:"{f} not found: {v}",rEnum:"invalid {f}: {v}",rUrl:"invalid URL in {f}",rLen:"{f} is too long (max {m})",rDup:"duplicate",Export:"Export",xj:"Export as JSON",xc:"Export as CSV",pick:"Choose a picture",srch:"Search pictures for this Part No",imgpn:"Enter the Part No first.",imgcfg:"Image search is not configured. Set IMG.key in the code.",imgnone:"No pictures found.",imgerr:"Could not reach the image search service.",imgbad:"That picture could not be loaded. Choose another one.",Classes:"Classes",Categories:"Categories",Subcategories:"Subcategories",Locations:"Locations",Items:"Items",
 Class_name:"Class name",Category_name:"Category name",Subcategory_name:"Subcategory name",Location_name:"Location name",Item_name:"Item name",Qty:"Qty",
 save:"Save",del:"Delete",ok:"OK",cancel:"Cancel",signin:"Sign in",
 inUse:"This line is in use!",delItem:"Inventory history will be deleted too. Do you want to proceed?",usePic:"Use this picture?",nf:"Item not found",dup:"This Part No already exists!",out:"Sign out",pw:"Password",bad:"Invalid e-mail or password",slow:"Not confirmed by the server yet. Keep this page open: the change syncs when the connection returns. Check your connection, the databaseURL and the database rules.",chk:"Could not reach the Realtime Database. Check the databaseURL in cfg, that the database was created and that its rules allow signed-in users."},
-pt:{Import:"Importar",imj:"Importar de JSON",imc:"Importar de CSV",imcol:"Coleção",imcols:"Colunas (* obrigatório)",imres:"{n} registro(s) a incluir, {m} rejeitado(s).",imgo:"Deseja prosseguir com a importação?",imdone:"{n} registro(s) importado(s).",imbad:"O arquivo está vazio ou não é válido para o formato escolhido.",rQuote:"aspas soltas ou sem fechar: coloque o valor entre aspas duplas e dobre as aspas internas (ex.: \"LCD 7\"\" 50 pinos\")",rLn:"Linha",rReq:"{f} é obrigatório",rRef:"{f} não encontrado: {v}",rEnum:"{f} inválido: {v}",rUrl:"URL inválida em {f}",rLen:"{f} é longo demais (máx. {m})",rDup:"duplicado",Export:"Exportar",xj:"Exportar como JSON",xc:"Exportar como CSV",pick:"Escolha uma imagem",srch:"Buscar imagens deste Part No",imgpn:"Informe o Part No primeiro.",imgcfg:"A busca de imagens não está configurada. Preencha IMG.key no código.",imgnone:"Nenhuma imagem encontrada.",imgerr:"Não foi possível acessar o serviço de busca de imagens.",imgbad:"Não foi possível carregar essa imagem. Escolha outra.",Class:"Classe",Category:"Categoria",Subcategory:"Subcategoria",Location:"Local",Item:"Item",Inventory:"Inventário",History:"Histórico",
+pt:{imopt:"opcional",Import:"Importar",imj:"Importar de JSON",imc:"Importar de CSV",imcol:"Coleção",imcols:"Colunas (* obrigatório)",imres:"{n} registro(s) a incluir, {m} rejeitado(s).",imgo:"Deseja prosseguir com a importação?",imdone:"{n} registro(s) importado(s).",imbad:"O arquivo está vazio ou não é válido para o formato escolhido.",rQuote:"aspas soltas ou sem fechar: coloque o valor entre aspas duplas e dobre as aspas internas (ex.: \"LCD 7\"\" 50 pinos\")",rLn:"Linha",rReq:"{f} é obrigatório",rRef:"{f} não encontrado: {v}",rEnum:"{f} inválido: {v}",rUrl:"URL inválida em {f}",rLen:"{f} é longo demais (máx. {m})",rDup:"duplicado",Export:"Exportar",xj:"Exportar como JSON",xc:"Exportar como CSV",pick:"Escolha uma imagem",srch:"Buscar imagens deste Part No",imgpn:"Informe o Part No primeiro.",imgcfg:"A busca de imagens não está configurada. Preencha IMG.key no código.",imgnone:"Nenhuma imagem encontrada.",imgerr:"Não foi possível acessar o serviço de busca de imagens.",imgbad:"Não foi possível carregar essa imagem. Escolha outra.",Class:"Classe",Category:"Categoria",Subcategory:"Subcategoria",Location:"Local",Item:"Item",Inventory:"Inventário",History:"Histórico",
 Classes:"Classes",Categories:"Categorias",Subcategories:"Subcategorias",Locations:"Locais",Items:"Itens",
 Class_name:"Nome da classe",Category_name:"Nome da categoria",Subcategory_name:"Nome da subcategoria",Location_name:"Nome do local",Item_name:"Nome do item",
 Unit:"Unid",Gain:"Ganho",Details:"Detalhes",Picture:"Imagem",Action:"Ação",Quantity:"Quantidade",Qty:"Qtd",
 save:"Gravar",del:"Excluir",ok:"OK",cancel:"Cancelar",signin:"Entrar",
 inUse:"Esta linha está em uso!",delItem:"O histórico do inventário também será excluído. Deseja continuar?",usePic:"Usar esta imagem?",nf:"Item não encontrado",dup:"Este Part No já existe!",out:"Sair",pw:"Senha",bad:"E-mail ou senha inválidos",slow:"Ainda não confirmado pelo servidor. Mantenha esta página aberta: a alteração sincroniza quando a conexão voltar. Verifique a conexão, a databaseURL e as regras do banco.",chk:"Não foi possível acessar o Realtime Database. Verifique a databaseURL no cfg, se o banco foi criado e se as regras permitem usuários autenticados."},
-es:{Import:"Importar",imj:"Importar desde JSON",imc:"Importar desde CSV",imcol:"Colección",imcols:"Columnas (* obligatorio)",imres:"{n} registro(s) por añadir, {m} rechazado(s).",imgo:"¿Continuar con la importación?",imdone:"{n} registro(s) importado(s).",imbad:"El archivo está vacío o no es válido para el formato elegido.",rQuote:"comillas sueltas o sin cerrar: ponga el valor entre comillas dobles y duplique las internas (p. ej.: \"LCD 7\"\" 50 pines\")",rLn:"Línea",rReq:"{f} es obligatorio",rRef:"{f} no encontrado: {v}",rEnum:"{f} no válido: {v}",rUrl:"URL no válida en {f}",rLen:"{f} es demasiado largo (máx. {m})",rDup:"duplicado",Export:"Exportar",xj:"Exportar como JSON",xc:"Exportar como CSV",pick:"Elija una imagen",srch:"Buscar imágenes de este Part No",imgpn:"Introduzca primero el Part No.",imgcfg:"La búsqueda de imágenes no está configurada. Complete IMG.key en el código.",imgnone:"No se encontraron imágenes.",imgerr:"No se pudo acceder al servicio de búsqueda de imágenes.",imgbad:"No se pudo cargar esa imagen. Elija otra.",Class:"Clase",Category:"Categoría",Subcategory:"Subcategoría",Location:"Ubicación",Item:"Artículo",Inventory:"Inventario",History:"Historial",
+es:{imopt:"opcional",Import:"Importar",imj:"Importar desde JSON",imc:"Importar desde CSV",imcol:"Colección",imcols:"Columnas (* obligatorio)",imres:"{n} registro(s) por añadir, {m} rechazado(s).",imgo:"¿Continuar con la importación?",imdone:"{n} registro(s) importado(s).",imbad:"El archivo está vacío o no es válido para el formato elegido.",rQuote:"comillas sueltas o sin cerrar: ponga el valor entre comillas dobles y duplique las internas (p. ej.: \"LCD 7\"\" 50 pines\")",rLn:"Línea",rReq:"{f} es obligatorio",rRef:"{f} no encontrado: {v}",rEnum:"{f} no válido: {v}",rUrl:"URL no válida en {f}",rLen:"{f} es demasiado largo (máx. {m})",rDup:"duplicado",Export:"Exportar",xj:"Exportar como JSON",xc:"Exportar como CSV",pick:"Elija una imagen",srch:"Buscar imágenes de este Part No",imgpn:"Introduzca primero el Part No.",imgcfg:"La búsqueda de imágenes no está configurada. Complete IMG.key en el código.",imgnone:"No se encontraron imágenes.",imgerr:"No se pudo acceder al servicio de búsqueda de imágenes.",imgbad:"No se pudo cargar esa imagen. Elija otra.",Class:"Clase",Category:"Categoría",Subcategory:"Subcategoría",Location:"Ubicación",Item:"Artículo",Inventory:"Inventario",History:"Historial",
 Classes:"Clases",Categories:"Categorías",Subcategories:"Subcategorías",Locations:"Ubicaciones",Items:"Artículos",
 Class_name:"Nombre de la clase",Category_name:"Nombre de la categoría",Subcategory_name:"Nombre de la subcategoría",Location_name:"Nombre de la ubicación",Item_name:"Nombre del artículo",
 Unit:"Unidad",Gain:"Ganancia",Details:"Detalles",Picture:"Imagen",Action:"Acción",Quantity:"Cantidad",Qty:"Cant.",
@@ -246,6 +246,7 @@ $("#pn").oninput=cur.ref;$("#mn").onclick=()=>adj(-1);$("#pl").onclick=()=>adj(1
 cur.ref();$("#pn").focus()}
 
 // === Import (names instead of IDs; adds records, never overwrites) ===
+const IM=["Class","Category","Subcategory","Location","Item"];
 const fm=(k,o)=>t(k).replace(/\{(\w)\}/g,(_,c)=>o[c]??"");
 const nk=(n,x)=>n==="Item"?String(x["Part No"]||"").trim().toLowerCase():n==="Subcategory"?x.Category_ID+"|"+String(x.Subcategory_name||"").trim().toLowerCase():String(x[n+"_name"]||"").trim().toLowerCase();
 function parseCSV(txt){txt=txt.replace(/^\uFEFF/,"").replace(/\r\n?/g,"\n");
@@ -290,9 +291,9 @@ if(!err){const kk=nk(n,r);if(have.has(kk)||seen.has(kk))err=t("rDup");else seen.
 err?bad.push(t("rLn")+" "+ln+": "+err):ok.push(r)});
 return{ok,bad}}
 function imp(){
-const IM=["Class","Category","Subcategory","Location","Item"];
 app.innerHTML=`<h2 class="cn">${esc(t("Import"))}</h2><label>${esc(t("imcol"))}<select id="ims">${IM.map(n=>`<option value="${n}">${esc(t(n))}</option>`).join("")}</select></label><p class="mut" id="imh"></p><div class="xb"><button id="imj">${esc(t("imj"))}</button><button id="imc">${esc(t("imc"))}</button></div><input type="file" id="imf" hidden>`;
-const hint=()=>{$("#imh").textContent=t("imcols")+": "+S[$("#ims").value].map(([k,y,q])=>(y==="r"?k.replace("_ID","")+"_name":k)+(q?"*":"")).join(", ")};
+const hint=()=>{const n=$("#ims").value,rq=new Set(S[n].filter(f=>f[2]).map(([k,y])=>y==="r"?k.replace("_ID","")+"_name":k));
+$("#imh").textContent=t("imcols")+": "+xcols(n).map(c=>c===n+"_ID"?c+" ("+t("imopt")+")":c+(rq.has(c)?"*":"")).join(", ")};
 hint();$("#ims").onchange=hint;
 let fmt;const fl=$("#imf");
 [["#imj","json",".json,application/json"],["#imc","csv",".csv,text/csv"]].forEach(([id,f,acc])=>$(id).onclick=()=>{fmt=f;fl.accept=acc;fl.value="";fl.click()});
@@ -308,12 +309,15 @@ if(await commit(b))modal(fm("imdone",{n:ok.length}))}}
 
 // === Export (one file per selected collection) ===
 const dlf=(name,txt,type)=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000)};
-const csv=n=>{const r=col(n),h=[n+"_ID"];r.forEach(x=>Object.keys(x).forEach(k=>h.includes(k)||h.push(k)));
-const q=v=>{v=v==null?"":String(v);return /[",;\r\n]|^\s|\s$/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+const xcols=n=>[...S[n].map(([k,y])=>y==="r"?k.replace("_ID","")+"_name":k),n+"_ID"];
+const xrow=(n,x)=>{const o={};S[n].forEach(([k,y])=>{if(y==="r"){const c=k.replace("_ID","");o[c+"_name"]=nm(c,x[k])}else o[k]=x[k]??""});o[n+"_ID"]=x[n+"_ID"]??"";return o};
+const xdata=n=>IM.includes(n)?col(n).map(x=>xrow(n,x)):col(n);
+const csv=n=>{const im=IM.includes(n),r=xdata(n),h=im?xcols(n):[n+"_ID"];if(!im)r.forEach(x=>Object.keys(x).forEach(k=>h.includes(k)||h.push(k)));
+const q=v=>'"'+String(v==null?"":v).replace(/"/g,'""')+'"';
 return "\uFEFF"+[h.map(q).join(","),...r.map(x=>h.map(k=>q(x[k])).join(","))].join("\r\n")};
 function exp(){
 app.innerHTML=`<h2 class="cn">${esc(t("Export"))}</h2><div class="xl" id="xl">${NAMES.map(n=>`<label><input type="checkbox" value="${n}"> ${esc(t(n))} (${D[n].size})</label>`).join("")}</div><div class="xb"><button id="xj" disabled>${esc(t("xj"))}</button><button id="xc" disabled>${esc(t("xc"))}</button></div>`;
-const bs=[$("#xj"),$("#xc")],run2=f=>[...document.querySelectorAll("#xl input:checked")].forEach((c,i)=>setTimeout(()=>f==="json"?dlf(c.value+".json",JSON.stringify(col(c.value),null,2),"application/json"):dlf(c.value+".csv",csv(c.value),"text/csv;charset=utf-8"),i*400));
+const bs=[$("#xj"),$("#xc")],run2=f=>[...document.querySelectorAll("#xl input:checked")].forEach((c,i)=>setTimeout(()=>f==="json"?dlf(c.value+".json",JSON.stringify(xdata(c.value),null,2),"application/json"):dlf(c.value+".csv",csv(c.value),"text/csv;charset=utf-8"),i*400));
 $("#xl").onchange=()=>bs.forEach(b=>b.disabled=!$("#xl input:checked"));
 $("#xj").onclick=()=>run2("json");$("#xc").onclick=()=>run2("csv")}
 
