@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#ffffff"><title>INVTRON v1.0</title>
+<meta name="theme-color" content="#ffffff"><title>INVTRON v1.1</title>
 <!-- Favicon -->
 <link rel="icon" type="image/png" sizes="32x32" href="icon.png?v=1">
 <link rel="icon" type="image/png" sizes="16x16" href="icon.png?v=1">
@@ -62,7 +62,7 @@ dl{display:grid;grid-template-columns:max-content 1fr;gap:8px 16px;margin:20px 0
 </style></head><body>
 <header>
 <button class="ic ok" id="ok" disabled aria-label="Save"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg></button>
-<h1>INVTRON v1.0</h1>
+<h1>INVTRON v1.1</h1>
 <button class="ic dl" id="dl" disabled aria-label="Delete"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></button>
 </header>
 <nav id="nav"></nav><main id="app"></main><div id="md" hidden></div><div id="lg" hidden></div>
@@ -79,17 +79,17 @@ const IMG={key:"YOUR_SERPER_API_KEY",url:"https://google.serper.dev/images"};
 
 // === i18n (browser language) ===
 const T={
-en:{Import:"Import",imj:"Import from JSON",imc:"Import from CSV",imcol:"Collection",imcols:"Columns (* required)",imres:"{n} record(s) to add, {m} rejected.",imgo:"Proceed with the import?",imdone:"{n} record(s) imported.",imbad:"The file is empty or is not valid for the chosen format.",rLn:"Line",rReq:"{f} is required",rRef:"{f} not found: {v}",rEnum:"invalid {f}: {v}",rUrl:"invalid URL in {f}",rLen:"{f} is too long (max {m})",rDup:"duplicate",Export:"Export",xj:"Export as JSON",xc:"Export as CSV",pick:"Choose a picture",srch:"Search pictures for this Part No",imgpn:"Enter the Part No first.",imgcfg:"Image search is not configured. Set IMG.key in the code.",imgnone:"No pictures found.",imgerr:"Could not reach the image search service.",imgbad:"That picture could not be loaded. Choose another one.",Classes:"Classes",Categories:"Categories",Subcategories:"Subcategories",Locations:"Locations",Items:"Items",
+en:{Import:"Import",imj:"Import from JSON",imc:"Import from CSV",imcol:"Collection",imcols:"Columns (* required)",imres:"{n} record(s) to add, {m} rejected.",imgo:"Proceed with the import?",imdone:"{n} record(s) imported.",imbad:"The file is empty or is not valid for the chosen format.",rQuote:"stray or unclosed quote: put the value in double quotes and double any inner quote (e.g. \"LCD 7\"\" 50 pins\")",rLn:"Line",rReq:"{f} is required",rRef:"{f} not found: {v}",rEnum:"invalid {f}: {v}",rUrl:"invalid URL in {f}",rLen:"{f} is too long (max {m})",rDup:"duplicate",Export:"Export",xj:"Export as JSON",xc:"Export as CSV",pick:"Choose a picture",srch:"Search pictures for this Part No",imgpn:"Enter the Part No first.",imgcfg:"Image search is not configured. Set IMG.key in the code.",imgnone:"No pictures found.",imgerr:"Could not reach the image search service.",imgbad:"That picture could not be loaded. Choose another one.",Classes:"Classes",Categories:"Categories",Subcategories:"Subcategories",Locations:"Locations",Items:"Items",
 Class_name:"Class name",Category_name:"Category name",Subcategory_name:"Subcategory name",Location_name:"Location name",Item_name:"Item name",Qty:"Qty",
 save:"Save",del:"Delete",ok:"OK",cancel:"Cancel",signin:"Sign in",
 inUse:"This line is in use!",delItem:"Inventory history will be deleted too. Do you want to proceed?",usePic:"Use this picture?",nf:"Item not found",dup:"This Part No already exists!",out:"Sign out",pw:"Password",bad:"Invalid e-mail or password",slow:"Not confirmed by the server yet. Keep this page open: the change syncs when the connection returns. Check your connection, the databaseURL and the database rules.",chk:"Could not reach the Realtime Database. Check the databaseURL in cfg, that the database was created and that its rules allow signed-in users."},
-pt:{Import:"Importar",imj:"Importar de JSON",imc:"Importar de CSV",imcol:"Coleção",imcols:"Colunas (* obrigatório)",imres:"{n} registro(s) a incluir, {m} rejeitado(s).",imgo:"Deseja prosseguir com a importação?",imdone:"{n} registro(s) importado(s).",imbad:"O arquivo está vazio ou não é válido para o formato escolhido.",rLn:"Linha",rReq:"{f} é obrigatório",rRef:"{f} não encontrado: {v}",rEnum:"{f} inválido: {v}",rUrl:"URL inválida em {f}",rLen:"{f} é longo demais (máx. {m})",rDup:"duplicado",Export:"Exportar",xj:"Exportar como JSON",xc:"Exportar como CSV",pick:"Escolha uma imagem",srch:"Buscar imagens deste Part No",imgpn:"Informe o Part No primeiro.",imgcfg:"A busca de imagens não está configurada. Preencha IMG.key no código.",imgnone:"Nenhuma imagem encontrada.",imgerr:"Não foi possível acessar o serviço de busca de imagens.",imgbad:"Não foi possível carregar essa imagem. Escolha outra.",Class:"Classe",Category:"Categoria",Subcategory:"Subcategoria",Location:"Local",Item:"Item",Inventory:"Inventário",History:"Histórico",
+pt:{Import:"Importar",imj:"Importar de JSON",imc:"Importar de CSV",imcol:"Coleção",imcols:"Colunas (* obrigatório)",imres:"{n} registro(s) a incluir, {m} rejeitado(s).",imgo:"Deseja prosseguir com a importação?",imdone:"{n} registro(s) importado(s).",imbad:"O arquivo está vazio ou não é válido para o formato escolhido.",rQuote:"aspas soltas ou sem fechar: coloque o valor entre aspas duplas e dobre as aspas internas (ex.: \"LCD 7\"\" 50 pinos\")",rLn:"Linha",rReq:"{f} é obrigatório",rRef:"{f} não encontrado: {v}",rEnum:"{f} inválido: {v}",rUrl:"URL inválida em {f}",rLen:"{f} é longo demais (máx. {m})",rDup:"duplicado",Export:"Exportar",xj:"Exportar como JSON",xc:"Exportar como CSV",pick:"Escolha uma imagem",srch:"Buscar imagens deste Part No",imgpn:"Informe o Part No primeiro.",imgcfg:"A busca de imagens não está configurada. Preencha IMG.key no código.",imgnone:"Nenhuma imagem encontrada.",imgerr:"Não foi possível acessar o serviço de busca de imagens.",imgbad:"Não foi possível carregar essa imagem. Escolha outra.",Class:"Classe",Category:"Categoria",Subcategory:"Subcategoria",Location:"Local",Item:"Item",Inventory:"Inventário",History:"Histórico",
 Classes:"Classes",Categories:"Categorias",Subcategories:"Subcategorias",Locations:"Locais",Items:"Itens",
 Class_name:"Nome da classe",Category_name:"Nome da categoria",Subcategory_name:"Nome da subcategoria",Location_name:"Nome do local",Item_name:"Nome do item",
 Unit:"Unid",Gain:"Ganho",Details:"Detalhes",Picture:"Imagem",Action:"Ação",Quantity:"Quantidade",Qty:"Qtd",
 save:"Gravar",del:"Excluir",ok:"OK",cancel:"Cancelar",signin:"Entrar",
 inUse:"Esta linha está em uso!",delItem:"O histórico do inventário também será excluído. Deseja continuar?",usePic:"Usar esta imagem?",nf:"Item não encontrado",dup:"Este Part No já existe!",out:"Sair",pw:"Senha",bad:"E-mail ou senha inválidos",slow:"Ainda não confirmado pelo servidor. Mantenha esta página aberta: a alteração sincroniza quando a conexão voltar. Verifique a conexão, a databaseURL e as regras do banco.",chk:"Não foi possível acessar o Realtime Database. Verifique a databaseURL no cfg, se o banco foi criado e se as regras permitem usuários autenticados."},
-es:{Import:"Importar",imj:"Importar desde JSON",imc:"Importar desde CSV",imcol:"Colección",imcols:"Columnas (* obligatorio)",imres:"{n} registro(s) por añadir, {m} rechazado(s).",imgo:"¿Continuar con la importación?",imdone:"{n} registro(s) importado(s).",imbad:"El archivo está vacío o no es válido para el formato elegido.",rLn:"Línea",rReq:"{f} es obligatorio",rRef:"{f} no encontrado: {v}",rEnum:"{f} no válido: {v}",rUrl:"URL no válida en {f}",rLen:"{f} es demasiado largo (máx. {m})",rDup:"duplicado",Export:"Exportar",xj:"Exportar como JSON",xc:"Exportar como CSV",pick:"Elija una imagen",srch:"Buscar imágenes de este Part No",imgpn:"Introduzca primero el Part No.",imgcfg:"La búsqueda de imágenes no está configurada. Complete IMG.key en el código.",imgnone:"No se encontraron imágenes.",imgerr:"No se pudo acceder al servicio de búsqueda de imágenes.",imgbad:"No se pudo cargar esa imagen. Elija otra.",Class:"Clase",Category:"Categoría",Subcategory:"Subcategoría",Location:"Ubicación",Item:"Artículo",Inventory:"Inventario",History:"Historial",
+es:{Import:"Importar",imj:"Importar desde JSON",imc:"Importar desde CSV",imcol:"Colección",imcols:"Columnas (* obligatorio)",imres:"{n} registro(s) por añadir, {m} rechazado(s).",imgo:"¿Continuar con la importación?",imdone:"{n} registro(s) importado(s).",imbad:"El archivo está vacío o no es válido para el formato elegido.",rQuote:"comillas sueltas o sin cerrar: ponga el valor entre comillas dobles y duplique las internas (p. ej.: \"LCD 7\"\" 50 pines\")",rLn:"Línea",rReq:"{f} es obligatorio",rRef:"{f} no encontrado: {v}",rEnum:"{f} no válido: {v}",rUrl:"URL no válida en {f}",rLen:"{f} es demasiado largo (máx. {m})",rDup:"duplicado",Export:"Exportar",xj:"Exportar como JSON",xc:"Exportar como CSV",pick:"Elija una imagen",srch:"Buscar imágenes de este Part No",imgpn:"Introduzca primero el Part No.",imgcfg:"La búsqueda de imágenes no está configurada. Complete IMG.key en el código.",imgnone:"No se encontraron imágenes.",imgerr:"No se pudo acceder al servicio de búsqueda de imágenes.",imgbad:"No se pudo cargar esa imagen. Elija otra.",Class:"Clase",Category:"Categoría",Subcategory:"Subcategoría",Location:"Ubicación",Item:"Artículo",Inventory:"Inventario",History:"Historial",
 Classes:"Clases",Categories:"Categorías",Subcategories:"Subcategorías",Locations:"Ubicaciones",Items:"Artículos",
 Class_name:"Nombre de la clase",Category_name:"Nombre de la categoría",Subcategory_name:"Nombre de la subcategoría",Location_name:"Nombre de la ubicación",Item_name:"Nombre del artículo",
 Unit:"Unidad",Gain:"Ganancia",Details:"Detalles",Picture:"Imagen",Action:"Acción",Quantity:"Cantidad",Qty:"Cant.",
@@ -248,22 +248,31 @@ cur.ref();$("#pn").focus()}
 // === Import (names instead of IDs; adds records, never overwrites) ===
 const fm=(k,o)=>t(k).replace(/\{(\w)\}/g,(_,c)=>o[c]??"");
 const nk=(n,x)=>n==="Item"?String(x["Part No"]||"").trim().toLowerCase():n==="Subcategory"?x.Category_ID+"|"+String(x.Subcategory_name||"").trim().toLowerCase():String(x[n+"_name"]||"").trim().toLowerCase();
-function parseCSV(txt){txt=txt.replace(/^\uFEFF/,"");
-const f1=txt.split(/\r?\n/)[0]||"",d=f1.split(";").length>f1.split(",").length?";":",";
-const rows=[];let r=[],f="",q=false;
+function parseCSV(txt){txt=txt.replace(/^\uFEFF/,"").replace(/\r\n?/g,"\n");
+const f1=txt.split("\n")[0]||"",d=f1.split(";").length>f1.split(",").length?";":",";
+const rows=[],meta=[];let r=[],f="",st=0,bad=false,line=1,rl=1;
+// st: 0 = unquoted/start of field, 1 = inside quotes, 2 = after the closing quote
+const endRow=()=>{r.push(f);f="";rows.push(r);meta.push({l:rl,b:bad});r=[];bad=false;st=0;rl=line};
 for(let i=0;i<txt.length;i++){const c=txt[i];
-if(q){if(c==='"'){if(txt[i+1]==='"'){f+='"';i++}else q=false}else f+=c}
-else if(c==='"')q=true;
-else if(c===d){r.push(f);f=""}
-else if(c==="\n"||c==="\r"){if(c==="\r"&&txt[i+1]==="\n")i++;r.push(f);f="";rows.push(r);r=[]}
-else f+=c}
-if(f!==""||r.length){r.push(f);rows.push(r)}
-const h=(rows.shift()||[]).map(x=>x.trim());
-return rows.filter(x=>x.some(v=>v.trim()!=="")).map(x=>Object.fromEntries(h.map((k,i)=>[k,x[i]??""])))}
+if(st===1){if(c==='"'){if(txt[i+1]==='"'){f+='"';i++}else st=2}else{f+=c;if(c==="\n")line++}continue}
+if(c===d){r.push(f);f="";st=0;continue}
+if(c==="\n"){line++;endRow();continue}
+if(c==='"'){if(st===0&&f.trim()===""){f="";st=1}else{bad=true;f+=c}continue}
+if(st===2){if(c!==" "&&c!=="\t"){bad=true;f+=c}continue}
+f+=c}
+if(st===1)bad=true;
+if(f!==""||r.length||st===1)endRow();
+const hm=meta.shift(),h=(rows.shift()||[]).map(x=>x.trim());
+if(hm&&hm.b)throw 0;
+const out=[];rows.forEach((x,i)=>{if(!x.some(v=>v.trim()!==""))return;
+const o=Object.fromEntries(h.map((k,j)=>[k,x[j]??""]));
+Object.defineProperty(o,"_q",{value:meta[i]});out.push(o)});
+return out}
 const jsonRows=txt=>{const j=JSON.parse(txt.replace(/^\uFEFF/,"")),a=Array.isArray(j)?j:j&&typeof j==="object"?Object.values(j):null;
 if(!a||a.some(x=>!x||typeof x!=="object"))throw 0;return a};
 function build(n,rows,off){const ok=[],bad=[],seen=new Set(),have=new Set(col(n).map(x=>nk(n,x)));
-rows.forEach((o,i)=>{const g=k=>o[k]==null?"":String(o[k]).trim(),r={};let err=null;
+rows.forEach((o,i)=>{const ln=o._q?o._q.l:i+off;if(o._q?.b){bad.push(t("rLn")+" "+ln+": "+t("rQuote"));return}
+const g=k=>o[k]==null?"":String(o[k]).trim(),r={};let err=null;
 for(const [k,y,q] of S[n]){let v="";
 if(y==="r"){const c=k.replace("_ID",""),w=g(c+"_name");
 if(w){let m=col(c).filter(x=>String(x[c+"_name"]).trim().toLowerCase()===w.toLowerCase());
@@ -278,7 +287,7 @@ if(y==="s"&&v.length>mx){err=fm("rLen",{f:lab(k),m:mx});break}}
 if(q&&!v){err=fm("rReq",{f:lab(k)});break}
 r[k]=v}
 if(!err){const kk=nk(n,r);if(have.has(kk)||seen.has(kk))err=t("rDup");else seen.add(kk)}
-err?bad.push(t("rLn")+" "+(i+off)+": "+err):ok.push(r)});
+err?bad.push(t("rLn")+" "+ln+": "+err):ok.push(r)});
 return{ok,bad}}
 function imp(){
 const IM=["Class","Category","Subcategory","Location","Item"];
@@ -300,7 +309,7 @@ if(await commit(b))modal(fm("imdone",{n:ok.length}))}}
 // === Export (one file per selected collection) ===
 const dlf=(name,txt,type)=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000)};
 const csv=n=>{const r=col(n),h=[n+"_ID"];r.forEach(x=>Object.keys(x).forEach(k=>h.includes(k)||h.push(k)));
-const q=v=>{v=v==null?"":String(v);return /[",\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+const q=v=>{v=v==null?"":String(v);return /[",;\r\n]|^\s|\s$/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
 return "\uFEFF"+[h.map(q).join(","),...r.map(x=>h.map(k=>q(x[k])).join(","))].join("\r\n")};
 function exp(){
 app.innerHTML=`<h2 class="cn">${esc(t("Export"))}</h2><div class="xl" id="xl">${NAMES.map(n=>`<label><input type="checkbox" value="${n}"> ${esc(t(n))} (${D[n].size})</label>`).join("")}</div><div class="xb"><button id="xj" disabled>${esc(t("xj"))}</button><button id="xc" disabled>${esc(t("xc"))}</button></div>`;
