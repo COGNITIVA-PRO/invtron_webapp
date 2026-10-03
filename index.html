@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#ffffff"><title>INVTRON</title>
+<meta name="theme-color" content="#ffffff"><title>INVTRON v0.9</title>
 <!-- Favicon -->
 <link rel="icon" type="image/png" sizes="32x32" href="icon.png?v=1">
 <link rel="icon" type="image/png" sizes="16x16" href="icon.png?v=1">
@@ -18,7 +18,8 @@
 <style>
 :root{--ink:#14181f;--mut:#6b7280;--line:#e3e6ea;--bg:#fff;--soft:#f5f6f8;--ok:#1a9d4a;--no:#d33a3a;color-scheme:light}
 *{box-sizing:border-box}
-body{margin:0;font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg);padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+body{margin:0;font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg);padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);overflow-x:clip}
+html{-webkit-text-size-adjust:100%}
 header{position:sticky;top:0;z-index:5;background:var(--bg);display:grid;grid-template-columns:56px 1fr 56px;align-items:center;padding:6px 8px;border-bottom:1px solid var(--line)}
 h1{margin:0;text-align:center;font-size:1.25rem;letter-spacing:.3em;font-weight:700}
 .ic{width:44px;height:44px;border-radius:50%;border:1.5px solid currentColor;background:none;display:grid;place-items:center;cursor:pointer;padding:0}
@@ -30,8 +31,8 @@ nav button{flex:none;border:1px solid var(--line);background:var(--bg);color:var
 nav button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 main{max-width:960px;margin:0 auto;padding:16px 12px 48px}
 form{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
-label{display:grid;gap:4px;font-size:.8rem;color:var(--mut)}
-input,select{font:inherit;color:var(--ink);padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);width:100%;min-height:42px}
+label{display:grid;min-width:0;gap:4px;font-size:.8rem;color:var(--mut)}
+input,select{font:inherit;font-size:16px;min-width:0;color:var(--ink);padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);width:100%;min-height:42px}
 hr{border:0;border-top:1px solid var(--line);margin:20px 0}
 .tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.92rem}
 th{text-align:left;color:var(--mut);font-weight:500;font-size:.78rem;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
@@ -53,11 +54,15 @@ dl{display:grid;grid-template-columns:max-content 1fr;gap:8px 16px;margin:20px 0
 #lg[hidden]{display:none}#lg form{grid-template-columns:1fr;gap:14px;width:100%;max-width:320px}
 #lg h2{text-align:center;letter-spacing:.3em;margin:0 0 6px}#le{color:var(--no);min-height:1.2em;margin:0;font-size:.9rem}#lg .ic{justify-self:center}
 #so{margin-left:auto;color:var(--mut)}
+.pr{display:flex;gap:6px;align-items:center}.pr input{flex:1}.sb{flex:none;width:42px;height:42px;color:var(--ink)}
+.gr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 14px}.gi{border:1px solid var(--line);border-radius:8px;background:var(--soft);padding:0;cursor:pointer;aspect-ratio:1;overflow:hidden}.gi img{width:100%;height:100%;object-fit:cover;max-height:none;border-radius:0;display:block}
+.xl{display:grid;gap:10px;margin:12px 0 20px}.xl label{display:flex;align-items:center;gap:10px;font-size:1rem;color:var(--ink)}.xl input{width:20px;height:20px;min-height:0}
+.xb{display:flex;gap:10px;flex-wrap:wrap}.xb button{flex:1;min-width:150px;padding:12px;border:1.5px solid var(--ink);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;font-size:16px;cursor:pointer}.xb button:disabled{opacity:.25;cursor:default}
 @media(min-width:700px){h1{font-size:1.4rem}}
 </style></head><body>
 <header>
 <button class="ic ok" id="ok" disabled aria-label="Save"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg></button>
-<h1>INVTRON v0.8</h1>
+<h1>INVTRON v0.9</h1>
 <button class="ic dl" id="dl" disabled aria-label="Delete"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></button>
 </header>
 <nav id="nav"></nav><main id="app"></main><div id="md" hidden></div><div id="lg" hidden></div>
@@ -69,20 +74,21 @@ import {getDatabase,ref,onValue,update,push,increment} from "https://www.gstatic
 // === Firebase config: replace with your project's values ===
 const cfg={apiKey:"AIzaSyDFswVTI7U8RvwpW29mDSaENQFvpcQKJNg",authDomain:"invtron.firebaseapp.com",databaseURL:"https://invtron-default-rtdb.firebaseio.com",projectId:"invtron",appId:"1:119491975952:web:a5681653eafa89bdc3e395"};
 const fb=initializeApp(cfg),db=getDatabase(fb),auth=getAuth(fb);
-
+// === Google Images search via Serper.dev (https://serper.dev/api-key) ===
+const IMG={key:"176c3fa92618c50959caa3de92dd139a97b81fe5",url:"https://google.serper.dev/images"};
 // === i18n (browser language) ===
 const T={
-en:{Classes:"Classes",Categories:"Categories",Subcategories:"Subcategories",Locations:"Locations",Items:"Items",
+en:{Export:"Export",xj:"Export as JSON",xc:"Export as CSV",pick:"Choose a picture",srch:"Search pictures for this Part No",imgpn:"Enter the Part No first.",imgcfg:"Image search is not configured. Set IMG.key in the code.",imgnone:"No pictures found.",imgerr:"Could not reach the image search service.",imgbad:"That picture could not be loaded. Choose another one.",Classes:"Classes",Categories:"Categories",Subcategories:"Subcategories",Locations:"Locations",Items:"Items",
 Class_name:"Class name",Category_name:"Category name",Subcategory_name:"Subcategory name",Location_name:"Location name",Item_name:"Item name",Qty:"Qty",
 save:"Save",del:"Delete",ok:"OK",cancel:"Cancel",signin:"Sign in",
 inUse:"This line is in use!",delItem:"Inventory history will be deleted too. Do you want to proceed?",usePic:"Use this picture?",nf:"Item not found",dup:"This Part No already exists!",out:"Sign out",pw:"Password",bad:"Invalid e-mail or password",slow:"Not confirmed by the server yet. Keep this page open: the change syncs when the connection returns. Check your connection, the databaseURL and the database rules.",chk:"Could not reach the Realtime Database. Check the databaseURL in cfg, that the database was created and that its rules allow signed-in users."},
-pt:{Class:"Classe",Category:"Categoria",Subcategory:"Subcategoria",Location:"Local",Item:"Item",Inventory:"Inventário",History:"Histórico",
+pt:{Export:"Exportar",xj:"Exportar como JSON",xc:"Exportar como CSV",pick:"Escolha uma imagem",srch:"Buscar imagens deste Part No",imgpn:"Informe o Part No primeiro.",imgcfg:"A busca de imagens não está configurada. Preencha IMG.key no código.",imgnone:"Nenhuma imagem encontrada.",imgerr:"Não foi possível acessar o serviço de busca de imagens.",imgbad:"Não foi possível carregar essa imagem. Escolha outra.",Class:"Classe",Category:"Categoria",Subcategory:"Subcategoria",Location:"Local",Item:"Item",Inventory:"Inventário",History:"Histórico",
 Classes:"Classes",Categories:"Categorias",Subcategories:"Subcategorias",Locations:"Locais",Items:"Itens",
 Class_name:"Nome da classe",Category_name:"Nome da categoria",Subcategory_name:"Nome da subcategoria",Location_name:"Nome do local",Item_name:"Nome do item",
 Unit:"Unid",Gain:"Ganho",Details:"Detalhes",Picture:"Imagem",Action:"Ação",Quantity:"Quantidade",Qty:"Qtd",
 save:"Gravar",del:"Excluir",ok:"OK",cancel:"Cancelar",signin:"Entrar",
 inUse:"Esta linha está em uso!",delItem:"O histórico do inventário também será excluído. Deseja continuar?",usePic:"Usar esta imagem?",nf:"Item não encontrado",dup:"Este Part No já existe!",out:"Sair",pw:"Senha",bad:"E-mail ou senha inválidos",slow:"Ainda não confirmado pelo servidor. Mantenha esta página aberta: a alteração sincroniza quando a conexão voltar. Verifique a conexão, a databaseURL e as regras do banco.",chk:"Não foi possível acessar o Realtime Database. Verifique a databaseURL no cfg, se o banco foi criado e se as regras permitem usuários autenticados."},
-es:{Class:"Clase",Category:"Categoría",Subcategory:"Subcategoría",Location:"Ubicación",Item:"Artículo",Inventory:"Inventario",History:"Historial",
+es:{Export:"Exportar",xj:"Exportar como JSON",xc:"Exportar como CSV",pick:"Elija una imagen",srch:"Buscar imágenes de este Part No",imgpn:"Introduzca primero el Part No.",imgcfg:"La búsqueda de imágenes no está configurada. Complete IMG.key en el código.",imgnone:"No se encontraron imágenes.",imgerr:"No se pudo acceder al servicio de búsqueda de imágenes.",imgbad:"No se pudo cargar esa imagen. Elija otra.",Class:"Clase",Category:"Categoría",Subcategory:"Subcategoría",Location:"Ubicación",Item:"Artículo",Inventory:"Inventario",History:"Historial",
 Classes:"Clases",Categories:"Categorías",Subcategories:"Subcategorías",Locations:"Ubicaciones",Items:"Artículos",
 Class_name:"Nombre de la clase",Category_name:"Nombre de la categoría",Subcategory_name:"Nombre de la subcategoría",Location_name:"Nombre de la ubicación",Item_name:"Nombre del artículo",
 Unit:"Unidad",Gain:"Ganancia",Details:"Detalles",Picture:"Imagen",Action:"Acción",Quantity:"Cantidad",Qty:"Cant.",
@@ -125,7 +131,7 @@ const B={ok:$("#ok"),dl:$("#dl")};
 
 // === Modal ===
 const modal=(m,o={})=>new Promise(r=>{const d=$("#md"),x=v=>{d.hidden=true;r(v)};
-d.innerHTML=`<div class="bx" role="dialog">${o.img?`<img src="${esc(o.img)}" alt="">`:""}<p>${esc(m)}</p><div class="bt"><button class="ic ok" title="${esc(t("ok"))}" aria-label="${esc(t("ok"))}">${OK}</button>${o.ask?`<button class="ic dl" title="${esc(t("cancel"))}" aria-label="${esc(t("cancel"))}">${DEL}</button>`:""}</div></div>`;
+d.innerHTML=`<div class="bx" role="dialog">${o.img?`<img src="${esc(o.img)}" alt="" referrerpolicy="no-referrer">`:""}<p>${esc(m)}</p><div class="bt"><button class="ic ok" title="${esc(t("ok"))}" aria-label="${esc(t("ok"))}">${OK}</button>${o.ask?`<button class="ic dl" title="${esc(t("cancel"))}" aria-label="${esc(t("cancel"))}">${DEL}</button>`:""}</div></div>`;
 d.hidden=false;d.querySelector(".ok").onclick=()=>x(true);const q=d.querySelector(".dl");if(q)q.onclick=()=>x(false);d.querySelector(".ok").focus()});
 
 // === Data sync ===
@@ -154,6 +160,22 @@ let pp;
 const chkPic=i=>pp||(pp=(async()=>{const v=i.value.trim();if(!v||!i.checkValidity()||i.dataset.ok===v)return true;
 if(await modal(t("usePic"),{ask:1,img:v})){i.dataset.ok=v;return true}
 i.value="";i.focus();return false})().finally(()=>pp=null));
+const SRC='<svg viewBox="0 0 24 24"><path d="M11 4a7 7 0 100 14 7 7 0 000-14zM21 21l-4.5-4.5"/></svg>';
+const picBox=i=>{const w=document.createElement("div"),b=document.createElement("button");w.className="pr";
+b.type="button";b.className="ic sb";b.innerHTML=SRC;b.title=t("srch");b.setAttribute("aria-label",t("srch"));b.onclick=()=>findPic(i);w.append(i,b);return w};
+const pickImg=a=>new Promise(r=>{const d=$("#md"),x=v=>{d.hidden=true;r(v)};
+d.innerHTML=`<div class="bx" role="dialog"><p>${esc(t("pick"))}</p><div class="gr">${a.map((m,i)=>`<button type="button" class="gi" data-i="${i}"><img src="${esc(m.thumb)}" alt="" referrerpolicy="no-referrer"></button>`).join("")}</div><div class="bt"><button class="ic dl" title="${esc(t("cancel"))}" aria-label="${esc(t("cancel"))}">${DEL}</button></div></div>`;
+d.hidden=false;d.firstChild.onclick=e=>{const b=e.target.closest("button");if(b)x(b.dataset.i==null?null:a[b.dataset.i].link)}});
+async function findPic(i){const pn=F.elements["Part No"].value.trim();
+if(!pn)return modal(t("imgpn"));
+if(!IMG.key||IMG.key.startsWith("YOUR"))return modal(t("imgcfg"));
+let r;try{r=await(await fetch(IMG.url,{method:"POST",headers:{"X-API-KEY":IMG.key,"Content-Type":"application/json"},body:JSON.stringify({q:pn,num:5})})).json()}catch(e){return modal(t("imgerr"))}
+if(!r.images)return modal(r.message||t("imgnone"));
+const a=r.images.slice(0,5).map(m=>({link:m.imageUrl,thumb:m.thumbnailUrl||m.imageUrl}));
+if(!a.length)return modal(t("imgnone"));
+const u=await pickImg(a);if(!u)return;
+if(!await new Promise(ok=>{const m=new Image();m.referrerPolicy="no-referrer";m.onload=()=>ok(1);m.onerror=()=>ok(0);m.src=u}))return modal(t("imgbad"));
+i.value=u;i.dataset.ok=u;i.dispatchEvent(new Event("input",{bubbles:true}));i.focus()}
 function crud(n){
 app.innerHTML=`<form id="f" novalidate></form><hr>${n==="History"?"":'<h2 id="cn" class="cn"></h2>'}<div class="tw"><table id="lst"></table></div>`;
 F=$("#f");F.onsubmit=e=>e.preventDefault();
@@ -162,7 +184,7 @@ if(y==="r"||y==="e"){i=document.createElement("select");if(y==="e")i.append(...E
 else{i=document.createElement("input");i.type=y==="u"?"url":y==="n"?"number":"text";
 if(y==="u")i.pattern="https?://.+";
 if(y==="n"){i.step="0.001";i.min="0.001"}else if(y==="s")i.maxLength=n==="History"?40:k==="Part No"?20:/name$/.test(k)?128:10}
-i.name=k;i.required=!!q;l.append(i);F.append(l)});
+i.name=k;i.required=!!q;l.append(k==="Picture"?picBox(i):i);F.append(l)});
 F.addEventListener("input",()=>B.ok.disabled=false);
 if(n==="Item"){const c=F.elements.Category_ID;c.onchange=()=>fillSel(F.elements.Subcategory_ID);
 F.elements.Picture.onchange=e=>chkPic(e.target)}
@@ -222,12 +244,23 @@ const e=$("#qt");e.textContent=q;e.className=q>0?"p":q<0?"n":"";$("#mn").disable
 $("#pn").oninput=cur.ref;$("#mn").onclick=()=>adj(-1);$("#pl").onclick=()=>adj(1);
 cur.ref();$("#pn").focus()}
 
+// === Export (one file per selected collection) ===
+const dlf=(name,txt,type)=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000)};
+const csv=n=>{const r=col(n),h=[n+"_ID"];r.forEach(x=>Object.keys(x).forEach(k=>h.includes(k)||h.push(k)));
+const q=v=>{v=v==null?"":String(v);return /[",\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+return "\uFEFF"+[h.map(q).join(","),...r.map(x=>h.map(k=>q(x[k])).join(","))].join("\r\n")};
+function exp(){
+app.innerHTML=`<h2 class="cn">${esc(t("Export"))}</h2><div class="xl" id="xl">${NAMES.map(n=>`<label><input type="checkbox" value="${n}"> ${esc(t(n))} (${D[n].size})</label>`).join("")}</div><div class="xb"><button id="xj" disabled>${esc(t("xj"))}</button><button id="xc" disabled>${esc(t("xc"))}</button></div>`;
+const bs=[$("#xj"),$("#xc")],run2=f=>[...document.querySelectorAll("#xl input:checked")].forEach((c,i)=>setTimeout(()=>f==="json"?dlf(c.value+".json",JSON.stringify(col(c.value),null,2),"application/json"):dlf(c.value+".csv",csv(c.value),"text/csv;charset=utf-8"),i*400));
+$("#xl").onchange=()=>bs.forEach(b=>b.disabled=!$("#xl input:checked"));
+$("#xj").onclick=()=>run2("json");$("#xc").onclick=()=>run2("csv")}
+
 // === Navigation ===
 const app=$("#app"),nav=$("#nav");
-nav.innerHTML=NAMES.map(n=>`<button data-n="${n}">${esc(t(n))}</button>`).join("")+`<button id="so">${esc(t("out"))}</button>`;
+nav.innerHTML=NAMES.map(n=>`<button data-n="${n}">${esc(t(n))}</button>`).join("")+`<button data-n="Export">${esc(t("Export"))}</button><button id="so">${esc(t("out"))}</button>`;
 function go(n){cur={v:n};F=null;B.ok.disabled=B.dl.disabled=true;
 [...nav.children].forEach(b=>b.classList.toggle("on",b.dataset.n===n));
-n==="Inventory"?inv():crud(n)}
+n==="Inventory"?inv():n==="Export"?exp():crud(n)}
 nav.onclick=e=>{const b=e.target;if(b.id==="so")signOut(auth);else if(b.dataset.n)go(b.dataset.n)};
 
 // === Login (Firebase Authentication, e-mail/password) ===
