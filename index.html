@@ -230,16 +230,49 @@ B.ok.disabled=B.dl.disabled=false;list();first();scrollTo({top:0,behavior:"smoot
 function reset(keep){const k=keep?S[cur.v].filter(f=>f[1]==="r").map(f=>[f[0],F.elements[f[0]].value]):[];
 F.reset();cur.id=null;k.forEach(([n,v])=>F.elements[n].value=v);sels();B.ok.disabled=B.dl.disabled=true;list();first(keep)}
 
-function save(){if(!F||!F.reportValidity())return;
-const n=cur.v,b={},v=val();
-if(n==="Item"){const k=v["Part No"].toLowerCase();if(col("Item").some(x=>x.Item_ID!==cur.id&&(x["Part No"]||"").trim().toLowerCase()===k))return modal(t("dup"))}
-if(n==="History"){const id=push(ref(db,n)).key;
-b[n+"/"+id]={...v,History_ID:id,ts:Date.now()};
-bump(b,v.Item_ID,(ADD.includes(v.Action)?1:-1)*v.Quantity)}
-else{const id=cur.id||push(ref(db,n)).key;
-b[n+"/"+id]={...v,[n+"_ID"]:id};
-if(n==="Item"&&!cur.id)bump(b,id,0)}
-run(b,1)}
+// function save(){if(!F||!F.reportValidity())return;
+// const n=cur.v,b={},v=val();
+// if(n==="Item"){const k=v["Part No"].toLowerCase();if(col("Item").some(x=>x.Item_ID!==cur.id&&(x["Part No"]||"").trim().toLowerCase()===k))return modal(t("dup"))}
+// if(n==="History"){const id=push(ref(db,n)).key;
+// b[n+"/"+id]={...v,History_ID:id,ts:Date.now()};
+// bump(b,v.Item_ID,(ADD.includes(v.Action)?1:-1)*v.Quantity)}
+// else{const id=cur.id||push(ref(db,n)).key;
+// b[n+"/"+id]={...v,[n+"_ID"]:id};
+// if(n==="Item"&&!cur.id)bump(b,id,0)}
+// run(b,1)}
+
+async function save(){
+  if(!F||!F.reportValidity())return;
+  const n=cur.v, b={}, v=val();
+  
+  if(n==="Item"){
+    const k=v["Part No"].toLowerCase();
+    if(col("Item").some(x=>x.Item_ID!==cur.id&&(x["Part No"]||"").trim().toLowerCase()===k)) return modal(t("dup"));
+  }
+  
+  if(n==="History"){
+    const id=push(ref(db,n)).key;
+    b[n+"/"+id]={...v,History_ID:id,ts:Date.now()};
+    bump(b,v.Item_ID,(ADD.includes(v.Action)?1:-1)*v.Quantity);
+    run(b,1);
+  } else {
+    const isNewItem = (n === "Item" && !cur.id);
+    const id = cur.id || push(ref(db,n)).key;
+    b[n+"/"+id] = {...v, [n+"_ID"]: id};
+    
+    // Grava primeiro o registro da coleção principal (ex: Items)
+    const ok = await commit(b);
+    if(ok) {
+      // Se for um item NOVO e a gravação do Item funcionou, grava o Inventory em seguida
+      if(isNewItem) {
+        const invB = {};
+        bump(invB, id, 0);
+        await commit(invB);
+      }
+      reset(1);
+    }
+  }
+}
 
 const USE={Class:[["Item","Class_ID"]],Category:[["Subcategory","Category_ID"],["Item","Category_ID"]],Subcategory:[["Item","Subcategory_ID"]],Location:[["Item","Location_ID"]]};
 async function del(id=cur.id){const n=cur.v;if(!id)return;const b={};
