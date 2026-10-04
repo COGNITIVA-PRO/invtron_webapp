@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#ffffff"><title>INVTRON v1.73</title>
+<meta name="theme-color" content="#ffffff"><title></title>
 <!-- Favicon -->
 <link rel="icon" type="image/png" sizes="32x32" href="icon.png?v=1">
 <link rel="icon" type="image/png" sizes="16x16" href="icon.png?v=1">
@@ -15,9 +15,24 @@
 <link rel="manifest" id="mf" href="manifest.json">
 <meta name="theme-color" content="#000000">
 <script>
+  // --------------------------------
+  // Change the app version here:
+  window.APP_NAME = "INVTRON v1.73";
+  // --------------------------------
+
+  // Registers the Service Worker
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js');
   }
+
+  // Updates <title> tag
+  document.title = window.APP_NAME;
+
+  // Waits for the doc to finish loading and updates the <h1> in the header
+  document.addEventListener("DOMContentLoaded", () => {
+    const h1 = document.querySelector("header h1");
+    if (h1) h1.textContent = window.APP_NAME;
+  });
 </script>
 <style>
 :root{--ink:#14181f;--mut:#6b7280;--line:#e3e6ea;--bg:#fff;--soft:#f5f6f8;--ok:#1a9d4a;--no:#d33a3a;color-scheme:light}
@@ -78,11 +93,15 @@ dl{display:grid;grid-template-columns:max-content 1fr;gap:8px 16px;margin:20px 0
 </style></head><body>
 <header>
 <button class="ic ok" id="ok" disabled aria-label="Save"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg></button>
-<h1>INVTRON v1.73</h1>
+<h1 id="app-title"></h1>
 <button class="ic dl" id="dl" disabled aria-label="Cancel"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
 </header>
 <nav id="nav"></nav><main id="app"></main><div id="md" hidden></div><div id="lg" hidden></div>
 <script type="module">
+// Aplique aos elementos no início da execução
+document.title = APP_NAME;
+document.getElementById("app-title").textContent = APP_NAME;
+
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {getDatabase,ref,onValue,update,push,increment} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
