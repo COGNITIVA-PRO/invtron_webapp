@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#ffffff"><title>INVTRON v1.7</title>
+<meta name="theme-color" content="#ffffff"><title>INVTRON v1.71</title>
 <!-- Favicon -->
 <link rel="icon" type="image/png" sizes="32x32" href="icon.png?v=1">
 <link rel="icon" type="image/png" sizes="16x16" href="icon.png?v=1">
@@ -73,12 +73,13 @@ dl{display:grid;grid-template-columns:max-content 1fr;gap:8px 16px;margin:20px 0
 .rl{font-size:.8rem;color:var(--mut);margin:0 0 6px}.rf{display:flex;gap:24px;margin:0 0 18px}
 .rf label{display:flex;align-items:center;gap:10px;font-size:1rem;color:var(--ink)}.rf input{width:20px;height:20px;min-height:0;padding:0}
 #imb{margin:0 0 6px}.ih{margin-top:22px}.ih p{margin:6px 0;font-size:.75rem;color:var(--mut);overflow-wrap:anywhere}.ih b{color:var(--ink)}
+.rm{width:34px;height:34px;color:var(--no)}.rm svg{width:18px;height:18px}td.rd{width:1%;text-align:right;white-space:nowrap;padding:4px 8px}
 @media(min-width:700px){h1{font-size:1.4rem}}
 </style></head><body>
 <header>
 <button class="ic ok" id="ok" disabled aria-label="Save"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg></button>
-<h1>INVTRON v1.7</h1>
-<button class="ic dl" id="dl" disabled aria-label="Delete"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></button>
+<h1>INVTRON v1.71</h1>
+<button class="ic dl" id="dl" disabled aria-label="Cancel"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
 </header>
 <nav id="nav"></nav><main id="app"></main><div id="md" hidden></div><div id="lg" hidden></div>
 <script type="module">
@@ -116,14 +117,14 @@ const lg=(navigator.languages&&navigator.languages[0])||navigator.language||"en"
 const t=k=>(T[lg.slice(0,2).toLowerCase()]||T.en)[k]??T.en[k]??k;
 
 // === Schema ===
-const E={Unit:["Un","cm","g","ml","m","Kg","l"],"Cap":["","pF","nF","mF"],"Tol%":["","1%","5%","10%"],Action:["Buy","Prt","Mke","Use","Rec","Dam","Def","Dis"]};
+const E={Unit:["Un","cm","g","ml","m","Kg","l"],"Tol%":["","1%","5%","10%"],Action:["Buy","Prt","Mke","Use","Rec","Dam","Def","Dis"]};
 // field: [name, type(s text|r ref|e enum|u url|n number), required]
 const S={
 Class:[["Class_name","s",1]],
 Category:[["Category_name","s",1]],
 Subcategory:[["Category_ID","r",1],["Subcategory_name","s",1]],
 Location:[["Location_name","s",1]],
-Item:[["Class_ID","r",1],["Category_ID","r",1],["Subcategory_ID","r",1],["Location_ID","r",1],["Part No","s",1],["Item_name","s",1],["Unit","e",1],["VI-VR","s"],["VO-VF","s"],["VCEO-VDS","s"],["Gain","s"],["mA","s"],["Cap","e"],["Watts","s"],["Ohms","s"],["Tol%","e"],["MHz","s"],["Pins","s"],["Datasheet","u",1],["Details","u",1],["Picture","u",1]],
+Item:[["Class_ID","r",1],["Category_ID","r",1],["Subcategory_ID","r",1],["Location_ID","r",1],["Part No","s",1],["Item_name","s",1],["Unit","e",1],["VI-VR","s"],["VO-VF","s"],["VCEO-VDS","s"],["Gain","s"],["mA","s"],["Cap","s"],["Watts","s"],["Ohms","s"],["Tol%","e"],["MHz","s"],["Pins","s"],["Datasheet","u",1],["Details","u",1],["Picture","u",1]],
 History:[["Item_ID","r",1],["Action","e",1],["Details","s",1],["Quantity","n",1]]};
 const NAMES=["Class","Category","Subcategory","Location","Item","Inventory","History"];
 const D=Object.fromEntries(NAMES.map(n=>[n,new Map()]));
@@ -145,11 +146,12 @@ const PL={Class:"Classes",Category:"Categories",Subcategory:"Subcategories",Loca
 const OK='<svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg>',DEL='<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg>';
 let cur={},F=null;
 const B={ok:$("#ok"),dl:$("#dl")};
-[[B.ok,"save"],[B.dl,"del"]].forEach(([e,k])=>{e.title=t(k);e.setAttribute("aria-label",t(k))});
+const XI='<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+[[B.ok,"save"],[B.dl,"cancel"]].forEach(([e,k])=>{e.title=t(k);e.setAttribute("aria-label",t(k))});
 
 // === Modal ===
 const modal=(m,o={})=>new Promise(r=>{const d=$("#md"),x=v=>{d.hidden=true;r(v)};
-d.innerHTML=`<div class="bx" role="dialog">${o.img?`<img src="${esc(o.img)}" alt="" referrerpolicy="no-referrer">`:""}<p>${esc(m)}</p><div class="bt"><button class="ic ok" title="${esc(t("ok"))}" aria-label="${esc(t("ok"))}">${OK}</button>${o.ask?`<button class="ic dl" title="${esc(t("cancel"))}" aria-label="${esc(t("cancel"))}">${DEL}</button>`:""}</div></div>`;
+d.innerHTML=`<div class="bx" role="dialog">${o.img?`<img src="${esc(o.img)}" alt="" referrerpolicy="no-referrer">`:""}<p>${esc(m)}</p><div class="bt"><button class="ic ok" title="${esc(t("ok"))}" aria-label="${esc(t("ok"))}">${OK}</button>${o.ask?`<button class="ic dl" title="${esc(t("cancel"))}" aria-label="${esc(t("cancel"))}">${XI}</button>`:""}</div></div>`;
 d.hidden=false;d.querySelector(".ok").onclick=()=>x(true);const q=d.querySelector(".dl");if(q)q.onclick=()=>x(false);d.querySelector(".ok").focus()});
 
 // === Data sync ===
@@ -182,7 +184,7 @@ const SRC='<svg viewBox="0 0 24 24"><path d="M11 4a7 7 0 100 14 7 7 0 000-14zM21
 const picBox=i=>{const w=document.createElement("div"),b=document.createElement("button");w.className="pr";
 b.type="button";b.className="ic sb";b.innerHTML=SRC;b.title=t("srch");b.setAttribute("aria-label",t("srch"));b.onclick=()=>findPic(i);w.append(i,b);return w};
 const pickImg=a=>new Promise(r=>{const d=$("#md"),x=v=>{d.hidden=true;r(v)};
-d.innerHTML=`<div class="bx" role="dialog"><p>${esc(t("pick"))}</p><div class="gr">${a.map((m,i)=>`<button type="button" class="gi" data-i="${i}"><img src="${esc(m.thumb)}" alt="" referrerpolicy="no-referrer"></button>`).join("")}</div><div class="bt"><button class="ic dl" title="${esc(t("cancel"))}" aria-label="${esc(t("cancel"))}">${DEL}</button></div></div>`;
+d.innerHTML=`<div class="bx" role="dialog"><p>${esc(t("pick"))}</p><div class="gr">${a.map((m,i)=>`<button type="button" class="gi" data-i="${i}"><img src="${esc(m.thumb)}" alt="" referrerpolicy="no-referrer"></button>`).join("")}</div><div class="bt"><button class="ic dl" title="${esc(t("cancel"))}" aria-label="${esc(t("cancel"))}">${XI}</button></div></div>`;
 d.hidden=false;d.firstChild.onclick=e=>{const b=e.target.closest("button");if(b)x(b.dataset.i==null?null:a[b.dataset.i].link)}});
 async function findPic(i){const pn=F.elements["Part No"].value.trim();
 if(!pn)return modal(t("imgpn"));
@@ -203,7 +205,7 @@ else{i=document.createElement("input");i.type=y==="u"?"url":y==="n"?"number":"te
 if(y==="u")i.pattern="https?://.+";
 if(y==="n"){i.step="0.001";i.min="0.001"}else if(y==="s")i.maxLength=mxl(n,k)}
 i.name=k;i.required=!!q;l.append(k==="Picture"?picBox(i):i);F.append(l)});
-F.addEventListener("input",()=>B.ok.disabled=false);
+F.addEventListener("input",()=>B.ok.disabled=B.dl.disabled=false);
 if(n==="Item"){const c=F.elements.Category_ID;c.onchange=()=>fillSel(F.elements.Subcategory_ID);
 F.elements.Picture.onchange=e=>chkPic(e.target)}
 const last=S[n].filter(f=>f[2]).pop()[0];
@@ -211,14 +213,14 @@ F.onkeydown=async e=>{if(e.key!=="Enter"||e.isComposing||e.target.name!==last)re
 e.preventDefault();if(B.ok.disabled)return;
 if(last==="Picture"&&!await chkPic(e.target))return;save()};
 sels();cur.ref=list;list();first();
-$("#lst").onclick=e=>{const r=e.target.closest("tr[data-id]");if(r&&n!=="History")pick(r.dataset.id)}}
+$("#lst").onclick=e=>{const d=e.target.closest("button[data-del]");if(d){del(d.dataset.del);return}const r=e.target.closest("tr[data-id]");if(r&&n!=="History")pick(r.dataset.id)}}
 
 function list(){const n=cur.v,[h,fn]=LV[n];
 const cn=$("#cn");if(cn)cn.textContent=t(PL[n])+" ("+D[n].size+")";
 const a=col(n).map(x=>({x,c:fn(x)}));
 a.sort(n==="History"?(p,q)=>q.x.ts-p.x.ts:(p,q)=>{for(const i of n==="Item"?[0,1,2,4]:[0,1,2,3]){const d=String(p.c[i]??"").localeCompare(String(q.c[i]??""),undefined,{sensitivity:"base"});if(d)return d}return 0});
-$("#lst").innerHTML="<tr>"+h.map(x=>`<th>${esc(t(x))}</th>`).join("")+"</tr>"+
-a.map(r=>`<tr data-id="${r.x[n+"_ID"]}"${r.x[n+"_ID"]===cur.id?' class="sel"':""}>`+r.c.map((v,i)=>`<td>${esc(v)}</td>`).join("")+"</tr>").join("")}
+$("#lst").innerHTML="<tr>"+h.map(x=>`<th>${esc(t(x))}</th>`).join("")+(n==="History"?"":"<th></th>")+"</tr>"+
+a.map(r=>`<tr data-id="${r.x[n+"_ID"]}"${r.x[n+"_ID"]===cur.id?' class="sel"':""}>`+r.c.map((v,i)=>`<td>${esc(v)}</td>`).join("")+(n==="History"?"":`<td class="rd"><button type="button" class="ic rm" data-del="${r.x[n+"_ID"]}" title="${esc(t("del"))}" aria-label="${esc(t("del"))}">${DEL}</button></td>`)+"</tr>").join("")}
 
 function pick(id){const r=D[cur.v].get(id);if(!r)return;cur.id=id;
 S[cur.v].forEach(([k])=>{F.elements[k].value=r[k]??"";if(k==="Category_ID"&&F.elements.Subcategory_ID)fillSel(F.elements.Subcategory_ID)});
@@ -240,7 +242,7 @@ if(n==="Item"&&!cur.id)bump(b,id,0)}
 run(b,1)}
 
 const USE={Class:[["Item","Class_ID"]],Category:[["Subcategory","Category_ID"],["Item","Category_ID"]],Subcategory:[["Item","Subcategory_ID"]],Location:[["Item","Location_ID"]]};
-async function del(){const n=cur.v,id=cur.id;if(!id)return;const b={};
+async function del(id=cur.id){const n=cur.v;if(!id)return;const b={};
 if(n==="Item"){if(qty(id)>0)return modal(t("inUse"));
 if(!await modal(t("delItem"),{ask:1}))return;
 b[n+"/"+id]=null;
@@ -248,8 +250,9 @@ col("Inventory").filter(x=>x.Item_ID===id).forEach(x=>b["Inventory/"+x.Inventory
 col("History").filter(x=>x.Item_ID===id).forEach(x=>b["History/"+x.History_ID]=null)}
 else{if(USE[n].some(([c,k])=>col(c).some(x=>x[k]===id)))return modal(t("inUse"));
 b[n+"/"+id]=null}
-run(b)}
-B.ok.onclick=save;B.dl.onclick=del;
+id===cur.id?run(b):commit(b)}
+const cancel=()=>{if(F)reset()};
+B.ok.onclick=save;B.dl.onclick=cancel;
 
 // === Inventory screen ===
 const find=()=>{const s=$("#pn").value.trim().toLowerCase();return s?col("Item").find(x=>(x["Part No"]||"").trim().toLowerCase()===s):null};
