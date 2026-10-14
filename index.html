@@ -17,7 +17,7 @@
 <script>
   // --------------------------------
   // Change the app version here:
-  window.APP_NAME = "INVTRON v1.75";
+  window.APP_NAME = "INVTRON v1.74";
   // --------------------------------
 
   // Registers the Service Worker
@@ -105,7 +105,7 @@ document.title = APP_NAME;
 document.getElementById("app-title").textContent = APP_NAME;
 
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getAuth,onAuthStateChanged,GoogleAuthProvider,signInWithRedirect,getRedirectResult,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getAuth,onAuthStateChanged,GoogleAuthProvider,signInWithPopup,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {getDatabase,ref,onValue,update,push,increment} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 // === Firebase config: replace with your project's values ===
@@ -387,9 +387,11 @@ const lgn=$("#lg");
 const GI='<svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.4 29.3 35 24 35c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 5.1 29.6 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.4-.1-2.7-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 16 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 7.1 29.6 5 24 5c-7.6 0-14.1 4.3-17.7 10.7z"/><path fill="#4CAF50" d="M24 45c5.5 0 10.4-1.9 14.3-5.1l-6.6-5.6C29.5 36 26.9 37 24 37c-5.3 0-9.7-3.4-11.3-8.1l-6.6 5.1C9.8 40.6 16.4 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-1 2.8-2.9 5.1-5.4 6.6l6.6 5.6C39.9 37.5 43 31.3 43 24c0-1.4-.1-2.7-.4-3.5z"/></svg>';
 
 // Screen 1: not signed in -> single "Sign in with Google" button
+let authErrMsg="";
 function loginGate(){
-lgn.innerHTML=`<form id="gf"><h2>${esc(document.title)}</h2><button type="button" id="gsi" class="gb">${GI}<span>${esc(t("signinGoogle"))}</span></button><p id="le" role="alert"></p></form>${cgFooter()}`;
-$("#gsi").onclick=e=>{e.target.disabled=true;signInWithRedirect(auth,gProvider).catch(x=>{$("#le").textContent=x.message;e.target.disabled=false})};
+lgn.innerHTML=`<form id="gf"><h2>${esc(document.title)}</h2><button type="button" id="gsi" class="gb">${GI}<span>${esc(t("signinGoogle"))}</span></button><p id="le" role="alert">${esc(authErrMsg)}</p></form>${cgFooter()}`;
+$("#gsi").onclick=e=>{authErrMsg="";$("#le").textContent="";e.target.disabled=true;
+signInWithPopup(auth,gProvider).catch(x=>{authErrMsg=(x.code||"")+": "+x.message;e.target.disabled=false;loginGate()})};
 lgn.hidden=false}
 
 // Screen 2: signed in with Google, no profile yet -> ask for name (prefilled) + phone, write to Users/{uid}
@@ -406,7 +408,6 @@ $("#so2").onclick=()=>signOut(auth);
 lgn.hidden=false}
 
 let uSub=null;
-getRedirectResult(auth).catch(x=>console.error(x));
 onAuthStateChanged(auth,u=>{
 if(uSub){uSub();uSub=null}
 if(!u){stop();lgn.replaceChildren();loginGate();return}
